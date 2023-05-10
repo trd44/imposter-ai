@@ -26,8 +26,9 @@ load_openai_api_key()
 
 saved_messages = [{"role": "system", "content": "respond to me as if you were a helpful travel agent helping me plan a trip."}]
 
-@app.route('/', defaults={'path': ''})
+@app.route('/', defaults={'path':''})
 def serve(path):
+    print(path)
     return send_from_directory(app.static_folder,'index.html')
 
 api.add_resource(HelloApiHandler, '/flask/hello')
