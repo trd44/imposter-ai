@@ -9,7 +9,7 @@ import datetime
 
 x = datetime.datetime.now()
 
-app = Flask(__name__, static_folder='frontend/build', static_url_path='')
+app = Flask(__name__, static_folder='/frontend/build', static_url_path='')
 # CORS(app)
 api = Api(app)
 
