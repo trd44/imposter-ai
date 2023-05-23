@@ -3,13 +3,16 @@ import openai
 from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS
-from api.HelloApiHandler import HelloApiHandler
+from backend.HelloApiHandler import HelloApiHandler
+import backend.__init__ 
 
 import datetime
 
 x = datetime.datetime.now()
 
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
+
+# app = backend.__init__.create_app()
 CORS(app)
 api = Api(app)
 
