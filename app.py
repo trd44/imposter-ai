@@ -2,7 +2,7 @@ import os
 import openai
 from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_restful import Api, Resource, reqparse
-from flask_cors import CORS
+# from flask_cors import CORS
 import backend.callbacks as cb
 from backend.HelloApiHandler import HelloApiHandler
 
@@ -11,12 +11,18 @@ import datetime
 x = datetime.datetime.now()
 
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
-CORS(app)
+# CORS(app)
 api = Api(app)
 app.config.from_mapping(
     SECRET_KEY='dev',
     DATABASE=os.path.join(app.instance_path, 'imposter.sqlite'),
 )
+
+# ensure the instance folder exists
+try:
+    os.makedirs(app.instance_path)
+except OSError:
+    pass
 
 # Load the API Key
 cb.load_openai_api_key()
@@ -32,6 +38,12 @@ api.add_resource(HelloApiHandler, '/flask/hello')
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'build'), 'favicon.ico')
+
+from backend import db
+db.init_app(app)
+
+from backend import auth
+app.register_blueprint(auth.bp)
 
 # @app.route('/', defaults={'path': ''})
 # @app.route('/<path:path>')

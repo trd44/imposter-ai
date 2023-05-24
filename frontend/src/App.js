@@ -3,8 +3,11 @@
 
 import FormSection from './components/FormSection';
 import AnswerSection from './components/AnswerSection';
+import Login from './components/Login/Login';
 
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 
 // import { makeStyles } from '@mui/system/make';
 // import Paper from '@mui/material/Paper'
@@ -25,8 +28,11 @@ import "./App.css";
 
 const App = () => {
 
+  const [token, setToken] = useState();
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
+  const [storedValues, setStoredValues] = useState([]);
+  
 
   const generateResponse = async (newQuestion, setNewQuestion) => {
     const response = await fetch('api/send_user_message', {
@@ -49,14 +55,9 @@ const App = () => {
     setNewQuestion('');
   }
 
-  // const { Configuration, OpenAIApi } = require("openai");
-
-  // const configuration = new Configuration({
-  //   apiKey: process.env.OPENAI_API_KEY,
-  // });
-  // const openai = new OpenAIApi(configuration);
-
-  const [storedValues, setStoredValues] = useState([]);
+  if(!token) {
+    return <Login setToken={setToken} />
+  }
 
   return (
     <div className='app-container'>
