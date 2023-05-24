@@ -27,7 +27,7 @@ class Conversation:
         if self.system_prompt_list:
             sys_prompt = {"role" : "system", "content": ""}
             for prompt in self.system_prompt_list:
-                if self.system_prompt_list is not "":
+                if sys_prompt["content"] is not "":
                     sys_prompt["content"] = sys_prompt["content"] + " "
                 sys_prompt["content"] = sys_prompt["content"] + prompt + "."
         
