@@ -3,7 +3,8 @@ import openai
 from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS
-from api.HelloApiHandler import HelloApiHandler
+import backend.callbacks as cb
+from backend.HelloApiHandler import HelloApiHandler
 
 import datetime
 
@@ -12,17 +13,13 @@ x = datetime.datetime.now()
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
 CORS(app)
 api = Api(app)
-
-def load_openai_api_key():
-    try:
-        with open("API_KEY") as f:
-            file_contents = f.read()
-        os.environ["OPENAI_API_KEY"] = file_contents
-    except:
-        pass
+app.config.from_mapping(
+    SECRET_KEY='dev',
+    DATABASE=os.path.join(app.instance_path, 'imposter.sqlite'),
+)
 
 # Load the API Key
-load_openai_api_key()
+cb.load_openai_api_key()
 
 saved_messages = [{"role": "system", "content": "respond to me as if you were a helpful travel agent helping me plan a trip."}]
 
