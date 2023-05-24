@@ -29,6 +29,7 @@ class GPTModel:
         Return:
             "assistant" message response if available
         """
+        # TODO: Might need to change how key is set. Should only be set once?
         openai.api_key = os.getenv("OPENAI_API_KEY")
         completion = openai.ChatCompletion.create(
             model=self.model_id,
