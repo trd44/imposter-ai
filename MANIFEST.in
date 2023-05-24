@@ -1,0 +1,4 @@
+include backend/schema.sql
+graft backend/static
+graft backend/templates
+global-exclude *.pyc
