@@ -27,7 +27,11 @@ class ChatManager:
         """
 
         # [1] Update the conversation via conversation id
-        pass
+        self.current_conversation = self.conversation_history[conv_id]
+        self.current_conversation.AddUserMessage(message)
+
+        # [2] Send message
+        self.SendModelRequest(conv_id)
         
     def UpdateSystemPrompt(self, conv_id, prompt_string):
         """
@@ -35,10 +39,11 @@ class ChatManager:
 
         Simply updates system prompt
         """
-        pass
+        self.current_conversation = self.current_conversation[conv_id]
+        self.current_conversation.AddSystemMessage(prompt_string)
 
     def SendModelRequest(self, conv_id):
         """
         Makes a model request given the current conversation state
         """
-        pass
+        self.model.MakeRequest(self.conversation_history[conv_id].ExportSavedMessages())
