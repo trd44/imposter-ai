@@ -86,8 +86,6 @@ def login():
                 'SELECT * FROM user WHERE username = ?', (username,)
             ).fetchone()
 
-            # print(user)
-
             if user is None:
                 return jsonify({'error': 'Incorrect username.'}), 400
             elif not check_password_hash(user['password'], password):

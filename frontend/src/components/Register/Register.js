@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import './Login.css';
+import './Register.css';
 
-async function loginUser(credentials) {
-    const response = await fetch('/auth/login', {
+async function registerUser(credentials) {
+    const response = await fetch('/auth/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -18,7 +18,7 @@ async function loginUser(credentials) {
 }
 
 
-export default function Login({ setToken }) {
+export default function Register() {
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -55,8 +55,8 @@ export default function Login({ setToken }) {
     }
 
     return (
-        <div className="login-wrapper">
-            <h1>Please Log In</h1>
+        <div className="register-wrapper">
+            <h1>Please Register</h1>
             <form onSubmit={handleSubmit}>
                 <label>
                     <p>Username</p>
