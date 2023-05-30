@@ -2,7 +2,7 @@ import os
 import openai
 from flask import Flask, request, jsonify, send_from_directory, render_template
 from flask_restful import Api, Resource, reqparse
-# from flask_cors import CORS
+from flask_cors import CORS
 import backend.callbacks as cb
 from backend.HelloApiHandler import HelloApiHandler
 
@@ -11,7 +11,7 @@ import datetime
 x = datetime.datetime.now()
 
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
-# CORS(app)
+CORS(app)
 api = Api(app)
 app.config.from_mapping(
     SECRET_KEY='dev',
@@ -88,6 +88,10 @@ def get_time():
         'Date':x,
         "Programming":"Python"
     }
+
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
 
 if __name__ == "__main__":
     # port = int(os.environ.get("PORT", 5000))

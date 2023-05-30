@@ -10,8 +10,8 @@ import Home from './components/Home/Home';
 import NavBar from './components/NavBar/NavBar';
 import Chat from './components/Chat/Chat'
 
-import FormSection from './components/FormSection';
-import AnswerSection from './components/AnswerSection';
+import FormSection from './components/Chat/InputSection';
+import AnswerSection from './components/Chat/MessagesSection';
 // import { makeStyles } from '@mui/system/make';
 // import Paper from '@mui/material/Paper'
 // import Grid from '@mui/material/Grid'
@@ -40,7 +40,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login setToken={setToken} />} />
           <Route path="/register" element={<Register />} />
-          
+          <Route path="/chat" element={<Chat />} />
         </Routes>
       </Router>
     )

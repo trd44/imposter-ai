@@ -2,15 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 
-import FormSection from '../FormSection';
-import AnswerSection from '../AnswerSection';
+import FormSection from './InputSection';
+import AnswerSection from './MessagesSection';
+import NavBar from '../NavBar/NavBar';
+import Footer from '../Footer/Footer';
+
+import './Chat.css';
 
 export default function Chat() {
   const [token, setToken] = useState();
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [storedValues, setStoredValues] = useState([]);
-  
+
 
   const generateResponse = async (newQuestion, setNewQuestion) => {
     const response = await fetch('api/send_user_message', {
@@ -33,32 +37,28 @@ export default function Chat() {
     setNewQuestion('');
   }
 
-//   if(!token) {
-//     return <Login setToken={setToken} />
-//   }
+  //   if(!token) {
+  //     return <Login setToken={setToken} />
+  //   }
 
   return (
-    <div className='app-container'>
-      <div className="header-section">
-        <h1>Imposter.AI 🤖</h1>
-        <p>
-        This project is a work in progress that aims to use different System prompts 
-        to teach ChatGPT how to behave in various roles, such as a travel agent.
-        <br/>
-        <br/>
-        Click send or press enter to submit your message. We are working to add an indicator that Imposter is working on an answer.
-        <br/>
-        <br/>
+    <div className='chat-container'>
+      <NavBar />
+      <header>
+        <h1>Travel Agent Imposter</h1>
+        Click send or press enter to submit your message.
+        <br />
+        We are working to add an indicator that Imposter is working on an answer.
+        <br />
         Start by saying Hello!
-        </p>
-      </div>
-      <div className="content-wrapper">
-        <div className="content-section">
+      </header>
+      <div className="chat-wrapper">
+        <div className="messages-section">
           <AnswerSection storedValues={storedValues} />
         </div>
         <FormSection generateResponse={generateResponse} />
       </div>
-
+      <Footer />
     </div>
   );
 };

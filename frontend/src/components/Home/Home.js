@@ -6,8 +6,8 @@ import NavBar from '../NavBar/NavBar';
 
 import './Home.css';
 
-import FormSection from '../FormSection';
-import AnswerSection from '../AnswerSection';
+import FormSection from '../Chat/InputSection';
+import AnswerSection from '../Chat/MessagesSection';
 
 const Home = () => {
     // ... your state and functions ...
@@ -16,7 +16,7 @@ const Home = () => {
         <div className='home-container'>
             <NavBar />
             <header>
-                <h1>Welcome to Imposter.AI 🤖</h1>
+                <h1>Welcome to imposter.ai 🤖</h1>
                 <p>Start conversations with AI in unique roles – from travel agents to historical figures.</p>
                 <button>Start Chatting</button>
             </header>
@@ -34,7 +34,7 @@ const Home = () => {
             {/* <section>
         <h2>Testimonials</h2>
       </section> */}
-
+            <br />
             <section>
                 <h2>About Us</h2>
                 <p>We're two friends passionate about AI and its potential...</p>

@@ -20,7 +20,7 @@ body {
   }
   
   header {
-    background-color: #f8f9fa;
+    background-color: white;
     padding: 20px;
     text-align: center;
   }
@@ -38,4 +38,5 @@ body {
   section {
     padding: 20px;
     text-align: center;
+    background-color: #f8f9fa;;
   }
