@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
+import Register from "../Register/Register"
 
 import './Login.css';
 
@@ -52,7 +54,7 @@ export default function Login({ setToken }) {
             console.error("An error occurred while logging in", err);
             setErrorMessage(err.message);
         }
-    }
+    }    
 
     return (
         <div className="login-wrapper">
@@ -75,7 +77,10 @@ export default function Login({ setToken }) {
                 <div>
                     <button type="submit">Submit</button>
                 </div>
-            </form>
+            <Router>
+                <Link to="/register">Register</Link>
+            </Router>
+            </form>       
             {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>
     )

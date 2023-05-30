@@ -1,0 +1,41 @@
+.home-container {
+    display: flex;
+    flex-direction: column; /* This will arrange your main div, header, content, and footer in a column */
+    min-height: 100vh; /* This will make sure your App takes up at least the full height of the view port */
+    justify-content: space-between; /* This will add space between your items, effectively pushing your footer to the bottom */
+  }
+
+  .content {
+    /* your content styles here, if needed */
+    flex-grow: 1; /* This will allow your content to grow and take up any extra space, pushing the footer down */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  header {
+    background-color: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  section {
+    padding: 20px;
+    text-align: center;
+  }

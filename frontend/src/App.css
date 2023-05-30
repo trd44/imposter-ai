@@ -2,6 +2,7 @@
   text-align: center;
 }
 
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -26,6 +27,11 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.content {
+  /* your content styles here, if needed */
+  flex-grow: 1; /* This will allow your content to grow and take up any extra space, pushing the footer down */
 }
 
 @keyframes App-logo-spin {

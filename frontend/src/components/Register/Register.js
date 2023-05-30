@@ -33,25 +33,25 @@ export default function Register() {
             return;
         }
 
-        try {
-            const { response, data } = await loginUser({
-                username,
-                password
-            });
+        // try {
+        //     const { response, data } = await loginUser({
+        //         username,
+        //         password
+        //     });
 
-            if (!response.ok) {
-                // Set the error message to the custom error returned from the backend
-                setErrorMessage(data.error);
-                return;
-            }
+        //     if (!response.ok) {
+        //         // Set the error message to the custom error returned from the backend
+        //         setErrorMessage(data.error);
+        //         return;
+        //     }
 
-            const { token } = data;
-            setToken(token);
-        } catch (err) {
-            // An error occurred while trying to send the request
-            console.error("An error occurred while logging in", err);
-            setErrorMessage(err.message);
-        }
+        //     const { token } = data;
+        //     setToken(token);
+        // } catch (err) {
+        //     // An error occurred while trying to send the request
+        //     console.error("An error occurred while logging in", err);
+        //     setErrorMessage(err.message);
+        // }
     }
 
     return (
@@ -81,6 +81,6 @@ export default function Register() {
     )
 }
 
-Login.propTypes = {
-    setToken: PropTypes.func.isRequired
-}
+// Login.propTypes = {
+//     setToken: PropTypes.func.isRequired
+// }
