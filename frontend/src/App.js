@@ -28,91 +28,113 @@ import AnswerSection from './components/Chat/MessagesSection';
 // import SendIcon from '@mui/icons-material/Send';
 
 import "./App.css";
+import Footer from './components/Footer/Footer';
 
 const App = () => {
   const [token, setToken] = useState();
 
-  if (!token) {
-    return (
-      <Router>
-        {/* <NavBar /> */}
+  return (
+    <div className="App">
+    <Router>     
+      <NavBar />
+      {!token ? (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login setToken={setToken} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/chat" element={<Chat />} />
         </Routes>
-      </Router>
-    )
-  }
-
-  return (
-    <Router>
-      <Routes>
-        <Route path="/chat" element={<Chat />} />
-      </Routes>
+      ) : (
+        <Routes>
+          <Route path="/chat" element={<Chat />} />
+        </Routes>
+      )}
+      <Footer />
     </Router>
-  );
-};
+    </div>
+  )
 
-  // const [token, setToken] = useState();
-  // const [name, setName] = useState('');
-  // const [message, setMessage] = useState('');
-  // const [storedValues, setStoredValues] = useState([]);
-  
-
-  // const generateResponse = async (newQuestion, setNewQuestion) => {
-  //   const response = await fetch('api/send_user_message', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ newQuestion }),
-  //   });
-
-  //   const data = await response.json();
-
-  //   setStoredValues([
-  //     {
-  //       question: newQuestion,
-  //       answer: data.content,
-  //     },
-  //     ...storedValues,
-  //   ]);
-  //   setNewQuestion('');
-  // }
-
-  // if(!token) {
-  //   return <Login setToken={setToken} />
+  // if (!token) {
+  //   return (
+  //     <Router>
+  //       <NavBar token={token}/>
+  //       <Routes>
+  //         <Route path="/" element={<Home />} />
+  //         <Route path="/login" element={<Login setToken={setToken} />} />
+  //         <Route path="/register" element={<Register />} />
+  //         <Route path="/chat" element={<Chat />} />
+  //       </Routes>
+  //     </Router>
+  //   )
   // }
 
   // return (
-  //   <div className='app-container'>
-  //     <div className="header-section">
-  //       <h1>Imposter.AI 🤖</h1>
-  //       <p>
-  //       This project is a work in progress that aims to use different System prompts 
-  //       to teach ChatGPT how to behave in various roles, such as a travel agent.
-  //       <br/>
-  //       <br/>
-  //       Click send or press enter to submit your message. We are working to add an indicator that Imposter is working on an answer.
-  //       <br/>
-  //       <br/>
-  //       Start by saying Hello!
-  //       </p>
-  //     </div>
-  //     <div className="content-wrapper">
-  //       <div className="content-section">
-  //         <AnswerSection storedValues={storedValues} />
-  //       </div>
-  //       <FormSection generateResponse={generateResponse} />
-  //     </div>
-  //     <Router>
+  //   <Router>
   //     <Routes>
-  //       <Route path="/login" element={<Login />} />
-  //       <Route path="/register" element={<Register />} />
+  //       <Route path="/chat" element={<Chat />} />
   //     </Routes>
   //   </Router>
-  //   </div>
+  // );
+};
+
+// const [token, setToken] = useState();
+// const [name, setName] = useState('');
+// const [message, setMessage] = useState('');
+// const [storedValues, setStoredValues] = useState([]);
+
+
+// const generateResponse = async (newQuestion, setNewQuestion) => {
+//   const response = await fetch('api/send_user_message', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({ newQuestion }),
+//   });
+
+//   const data = await response.json();
+
+//   setStoredValues([
+//     {
+//       question: newQuestion,
+//       answer: data.content,
+//     },
+//     ...storedValues,
+//   ]);
+//   setNewQuestion('');
+// }
+
+// if(!token) {
+//   return <Login setToken={setToken} />
+// }
+
+// return (
+//   <div className='app-container'>
+//     <div className="header-section">
+//       <h1>Imposter.AI 🤖</h1>
+//       <p>
+//       This project is a work in progress that aims to use different System prompts 
+//       to teach ChatGPT how to behave in various roles, such as a travel agent.
+//       <br/>
+//       <br/>
+//       Click send or press enter to submit your message. We are working to add an indicator that Imposter is working on an answer.
+//       <br/>
+//       <br/>
+//       Start by saying Hello!
+//       </p>
+//     </div>
+//     <div className="content-wrapper">
+//       <div className="content-section">
+//         <AnswerSection storedValues={storedValues} />
+//       </div>
+//       <FormSection generateResponse={generateResponse} />
+//     </div>
+//     <Router>
+//     <Routes>
+//       <Route path="/login" element={<Login />} />
+//       <Route path="/register" element={<Register />} />
+//     </Routes>
+//   </Router>
+//   </div>
 
 export default App;

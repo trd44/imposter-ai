@@ -4,6 +4,8 @@
     padding: 10px 20px;
     background-color: #f8f9fa;
     box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .home-link {
@@ -18,6 +20,7 @@
   .nav-links {
     display: flex;
     gap: 10px;
+    align-items: center;
   }
   
   .nav-links a {

@@ -6,7 +6,7 @@ import './Footer.css';
 
 const Footer = () => {
   return (
-    <footer>
+    <footer className='Footer'>
         Imposter.AI © 2023 | Contact Us | Follow us on [social media links]
     </footer>
   );

@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .App-logo {
@@ -29,8 +32,16 @@
 }
 
 .content {
-  /* your content styles here, if needed */
-  flex-grow: 1; /* This will allow your content to grow and take up any extra space, pushing the footer down */
+  min-height: 100%;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.Footer {
+  margin-top: auto;
 }
 
 @keyframes App-logo-spin {

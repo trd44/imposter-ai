@@ -33,15 +33,16 @@ def decode_token(token):
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
         error = None
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        db = get_db()
 
         if not username:
-            error = 'Username is required.'
+            error = 'Username is required'
         elif not password:
-            error = 'Password is required.'
+            error = 'Password are required.'
 
         if error is None:
             try:
@@ -50,14 +51,21 @@ def register():
                     (username, generate_password_hash(password)),
                 )
                 db.commit()
+                user = db.execute(
+                    'SELECT * FROM user WHERE username = ?', (username,)
+                ).fetchone()
             except db.IntegrityError:
                 error = f"User {username} is already registered."
+
+            if error is None:
+                token = create_token(user)
+                return jsonify({'token': token}), 200
             else:
-                return redirect(url_for("auth.login"))
+                return jsonify({'error': error}), 400
+        
+        return jsonify({'error': error}), 400
 
-        flash(error)
-
-    return render_template('auth/register.html')
+                
 
 @bp.route("/authdata")
 def get_time():
@@ -92,6 +100,7 @@ def login():
                 return jsonify({'error': 'Incorrect password.'}), 400
 
             session.clear()
+            user = dict(user)
             session['user_id'] = user['id']
             # Assuming you have a function get_token that returns a token for the user
             token = create_token(user)

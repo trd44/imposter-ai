@@ -1,6 +1,8 @@
 // src/components/Home/Home.js
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import Footer from '../Footer/Footer';
 import NavBar from '../NavBar/NavBar';
 
@@ -11,14 +13,15 @@ import AnswerSection from '../Chat/MessagesSection';
 
 const Home = () => {
     // ... your state and functions ...
+    const navigate = useNavigate();
 
     return (
         <div className='home-container'>
-            <NavBar />
+            {/* <NavBar /> */}
             <header>
                 <h1>Welcome to imposter.ai 🤖</h1>
                 <p>Start conversations with AI in unique roles – from travel agents to historical figures.</p>
-                <button>Start Chatting</button>
+                <button onClick={() => navigate("/chat")}>Start Chatting</button>
             </header>
 
             {/* <div className='content'> */}
@@ -42,7 +45,7 @@ const Home = () => {
 
             {/* </div> */}
 
-            <Footer />
+            {/* <Footer /> */}
 
 
             {/* </header>

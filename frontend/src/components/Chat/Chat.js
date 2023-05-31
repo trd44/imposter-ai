@@ -43,7 +43,7 @@ export default function Chat() {
 
   return (
     <div className='chat-container'>
-      <NavBar />
+      {/* <NavBar token={token} /> */}
       <header>
         <h1>Travel Agent Imposter</h1>
         Click send or press enter to submit your message.
@@ -58,7 +58,7 @@ export default function Chat() {
         </div>
         <FormSection generateResponse={generateResponse} />
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

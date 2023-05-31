@@ -5,16 +5,24 @@ import { Link } from 'react-router-dom';
 import './NavBar.css';
 
 const NavBar = ({ token }) => {
+
+  const username = localStorage.getItem('username');
+
   return (
     <nav className="navbar">
       <Link to="/" className="home-link">
         <h1>imposter.ai 🤖</h1>
       </Link>
       
-      {!token && (
+      {!token ? (
         <div className="nav-links">
           <Link to="/register">Register</Link>
           <Link to="/login">Login</Link>
+        </div>
+      ) : (
+        <div className="nav-links">
+          <p>Hi {username}!</p>
+          <Link to="/logout">Logout</Link>
         </div>
       )}
     </nav>

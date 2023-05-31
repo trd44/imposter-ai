@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
-import Register from "../Register/Register"
+import { useNavigate } from 'react-router-dom';
+
+// import Register from "../Register/Register"
 
 import './Login.css';
+import NavBar from '../NavBar/NavBar';
 
 async function loginUser(credentials) {
     const response = await fetch('/auth/login', {
@@ -24,6 +27,8 @@ export default function Login({ setToken }) {
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+
+    const navigate = useNavigate();
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -48,7 +53,9 @@ export default function Login({ setToken }) {
             }
 
             const { token } = data;
+            localStorage.setItem('username', username); 
             setToken(token);
+            navigate("/chat");
         } catch (err) {
             // An error occurred while trying to send the request
             console.error("An error occurred while logging in", err);
@@ -58,6 +65,7 @@ export default function Login({ setToken }) {
 
     return (
         <div className="login-wrapper">
+            {/* <NavBar /> */}
             <h1>Please Log In</h1>
             <form onSubmit={handleSubmit}>
                 <label>
@@ -77,9 +85,7 @@ export default function Login({ setToken }) {
                 <div>
                     <button type="submit">Submit</button>
                 </div>
-            <Router>
                 <Link to="/register">Register</Link>
-            </Router>
             </form>       
             {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>
