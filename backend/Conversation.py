@@ -3,7 +3,7 @@
 ''' Stores the messages in a conversation as well as the system prompt message '''
 class Conversation:
 
-    def __init__(self, id = 0, message_log = [], system_prompt_list = []):
+    def __init__(self, id = 0, name = "bot", message_log = [], system_prompt_list = []):
         """ 
         Initializes a conversation
 
@@ -15,6 +15,7 @@ class Conversation:
 
         """
         self.id = id
+        self.name = name
         self.message_log = message_log
         self.system_prompt_list = system_prompt_list
 
@@ -44,3 +45,12 @@ class Conversation:
 
     def AddAssistantMessage(self, assistant_message):
         self.message_log.append({"role": "assistant", "content": assistant_message})
+
+    def GetMessages(self):
+        return self.message_log
+    
+    def GetSystemPrompt(self):
+        return self.system_prompt_list
+    
+    def GetPersonalityName(self):
+        return self.name
