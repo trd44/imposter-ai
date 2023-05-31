@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS chat;
+DROP TABLE IF EXISTS personality;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,6 +21,15 @@ CREATE TABLE post (
 CREATE TABLE chat (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL,
+  personality_id INTEGER NOT NULL,
   messages TEXT NOT NULL,
+  UNIQUE (user_id, personality_id),
   FOREIGN KEY (user_id) REFERENCES user (id)
-)
+  FOREIGN KEY (personality_id) REFERENCES personality (id)
+);
+
+CREATE TABLE personality (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nickname TEXT NOT NULL,
+  system_prompt TEXT,
+);
