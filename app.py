@@ -1,15 +1,31 @@
+
+#region General/API Imports
 import os
+import datetime
 import openai
-from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask import Flask, request, jsonify, send_from_directory, render_template, g
 from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS
+#endregion
+
+#region Backend Imports
 import backend.callbacks as cb
 from backend.HelloApiHandler import HelloApiHandler
+from backend.ChatManager import ChatManager
+from backend.GPTModel import GPTModel
+from backend.auth import login_required
+from backend.DatabaseManager import DatabaseManager
+#endregion
 
-import datetime
+#region Data Imports
+from Presets.PresetData import TEST_PERSONALITY_ID 
+#endregion
 
+#region Global Variables
 x = datetime.datetime.now()
+#endregion
 
+#region Application Start
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
 CORS(app)
 api = Api(app)
@@ -17,12 +33,13 @@ app.config.from_mapping(
     SECRET_KEY='dev',
     DATABASE=os.path.join(app.instance_path, 'imposter.sqlite'),
 )
-
 # Load the API Key
+# TODO: How to handle API Key?
 cb.load_openai_api_key()
+#endregion
 
-saved_messages = [{"role": "system", "content": "respond to me as if you were a helpful travel agent helping me plan a trip."}]
 
+# TODO: Clean this up...
 @app.route('/', defaults={'path': ''})
 def serve(path):
     return send_from_directory(app.static_folder,'index.html')
@@ -41,25 +58,26 @@ def favicon():
 #     else:
 #         return send_from_directory(app.static_folder, 'index.html')
 
+
+#region ChatMessaging
+#TODO: Add login as required...
 @app.route("/api/send_user_message", methods=['POST'])
+@login_required
 def send_user_message():
     # Get the user's input
     data = request.json
-    saved_messages.append({"role": "user", "content": data['newQuestion']})
 
-    # Send the user's input to the ChatGPT API
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+    # Startup chat manager
+    chat_manager = ChatManager(g.user['id'], None, GPTModel())
 
-    completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=saved_messages
-    )
+    # Send message
+    # TODO: update for being able to select personality
+    response = chat_manager.SendMessage(TEST_PERSONALITY_ID, data['newQuestion'])
 
-    print(completion.choices[0].message)
+    print(response.content)
 
-    saved_messages.append({"role": "assistant", "content": completion.choices[0].message.content})
     # Return the ChatGPT's response
-    return completion.choices[0].message
+    return response
 
 @app.route('/api/some_function', methods=['POST'])
 def some_function():
@@ -67,6 +85,8 @@ def some_function():
     # Process the data and perform the desired function
     result = {'result': 'Hello, ' + data['name']}
     return jsonify(result)
+
+#endregion
 
 @app.route("/data")
 def get_time():
