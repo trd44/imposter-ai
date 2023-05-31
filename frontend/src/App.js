@@ -32,20 +32,23 @@ import Footer from './components/Footer/Footer';
 
 const App = () => {
   const [token, setToken] = useState();
+  const [username, setUsername] = useState(localStorage.getItem('username') || '');
 
   return (
     <div className="App">
     <Router>     
-      <NavBar />
+    <NavBar token={token} username={username} />
+
       {!token ? (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login setToken={setToken} />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/chat" element={<Chat />} />
+          {/* <Route path="/chat" element={<Chat />} /> */}
         </Routes>
       ) : (
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/chat" element={<Chat />} />
         </Routes>
       )}

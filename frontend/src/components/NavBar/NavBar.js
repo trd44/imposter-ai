@@ -4,9 +4,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar.css';
 
-const NavBar = ({ token }) => {
+const NavBar = ({ token, username }) => {
 
-  const username = localStorage.getItem('username');
+  // const username = localStorage.getItem('username');
 
   return (
     <nav className="navbar">
@@ -21,7 +21,7 @@ const NavBar = ({ token }) => {
         </div>
       ) : (
         <div className="nav-links">
-          <p>Hi {username}!</p>
+          Hi {username}!
           <Link to="/logout">Logout</Link>
         </div>
       )}
