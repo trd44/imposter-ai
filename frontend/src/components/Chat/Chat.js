@@ -4,8 +4,6 @@ import React, { useState, useEffect } from 'react';
 
 import FormSection from './InputSection';
 import AnswerSection from './MessagesSection';
-import NavBar from '../NavBar/NavBar';
-import Footer from '../Footer/Footer';
 
 import './Chat.css';
 
@@ -37,13 +35,8 @@ export default function Chat() {
     setNewQuestion('');
   }
 
-  //   if(!token) {
-  //     return <Login setToken={setToken} />
-  //   }
-
   return (
     <div className='chat-container'>
-      {/* <NavBar token={token} /> */}
       <header>
         <h1>Travel Agent Imposter</h1>
         Click send or press enter to submit your message.
@@ -58,7 +51,6 @@ export default function Chat() {
         </div>
         <FormSection generateResponse={generateResponse} />
       </div>
-      {/* <Footer /> */}
     </div>
   );
 };
