@@ -18,6 +18,12 @@ app.config.from_mapping(
     DATABASE=os.path.join(app.instance_path, 'imposter.sqlite'),
 )
 
+# ensure the instance folder exists
+try:
+    os.makedirs(app.instance_path)
+except OSError:
+    pass
+
 # Load the API Key
 cb.load_openai_api_key()
 
@@ -32,6 +38,12 @@ api.add_resource(HelloApiHandler, '/flask/hello')
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'build'), 'favicon.ico')
+
+from backend import db
+db.init_app(app)
+
+from backend import auth
+app.register_blueprint(auth.bp)
 
 # @app.route('/', defaults={'path': ''})
 # @app.route('/<path:path>')
@@ -76,6 +88,10 @@ def get_time():
         'Date':x,
         "Programming":"Python"
     }
+
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
 
 if __name__ == "__main__":
     # port = int(os.environ.get("PORT", 5000))
