@@ -1,0 +1,34 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .home-link {
+    text-decoration: none;
+  }
+  
+  .home-link h1 {
+    color: #000;
+    margin: 0;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .nav-links a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .nav-links a:hover {
+    color: #0056b3;
+  }
+  
