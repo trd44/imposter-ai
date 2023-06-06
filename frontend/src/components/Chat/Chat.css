@@ -1,11 +1,69 @@
 .chat-container{
     display: flex;
-    flex-direction: column; /* This will arrange your main div, header, content, and footer in a column */
-    /* min-height: 100vh; This will make sure your App takes up at least the full height of the view port */
-    justify-content: space-between; /* This will add space between your items, effectively pushing your footer to the bottom */
+    flex-direction: row;
+    height: calc(100vh - 100px);
+    justify-content: space-between;
 }
 
-header {
+.contacts-section {
+  width: 22.5%;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+  padding: 20px;
+  text-align: left;
+}
+
+.chat-wrapper {
+  width: 77.5%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.contact {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+  transition: background-color 0.3s ease;
+}
+
+.contact:hover {
+  background-color: #ddd;
+}
+
+.contact-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.contact-last-message {
+  color: #888;
+}
+
+.messages-section {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.input-section {
+  flex: none;
+}
+/* header {
     background-color: white;
     padding: 20px;
     text-align: center;
@@ -15,4 +73,4 @@ header {
     padding: 20px;
     text-align: center;
     background-color: #f8f9fa;;
-  }
+  } */
