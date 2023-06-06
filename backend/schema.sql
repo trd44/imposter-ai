@@ -23,12 +23,13 @@ CREATE TABLE chat (
   user_id INTEGER NOT NULL,
   personality_id INTEGER NOT NULL,
   messages TEXT NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES user (id),
+  UNIQUE (user_id, personality_id),
+  FOREIGN KEY (user_id) REFERENCES user (id)
   FOREIGN KEY (personality_id) REFERENCES personality (id)
 );
 
 CREATE TABLE personality (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  nickname TEXT NOT NULL, 
-  system_promt TEXT
+  nickname TEXT NOT NULL,
+  system_prompt TEXT,
 );
