@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 
-import FormSection from './InputSection';
-import AnswerSection from './MessagesSection';
+import InputSection from './InputSection';
+import MessagesSection from './MessagesSection';
 import ContactList from './ContactList';
 
 import myImage from '../../TestContact.jpeg'; // adjust the path as needed
@@ -31,12 +31,36 @@ export default function Chat() {
   const [message, setMessage] = useState('');
   const [storedValues, setStoredValues] = useState([
     {
-      question: "Test User Question",
-      answer: "Test Chat-GPT Response",
+      role: "User",
+      message: 'Hello!',
     },
     {
-      question: "Test User Question 2",
-      answer: "Test Chat-GPT Response 2",
+      role: "Assistant",
+      message: "Hi, how can I help you?",
+    },
+    {
+      role: "User",
+      message: 'Hello!',
+    },
+    {
+      role: "Assistant",
+      message: "Hi, how can I help you?",
+    },
+    {
+      role: "User",
+      message: 'Hello!',
+    },
+    {
+      role: "Assistant",
+      message: "Hi, how can I help you?",
+    },
+    {
+      role: "User",
+      message: 'Hello!',
+    },
+    {
+      role: "Assistant",
+      message: "Hi, how can I help you?",
     }
   ]);
 
@@ -77,9 +101,9 @@ export default function Chat() {
           Start by saying Hello!
         </header>
         <div className="messages-section">
-          <AnswerSection storedValues={storedValues} />
+          <MessagesSection storedValues={storedValues} />
         </div>
-        <FormSection generateResponse={generateResponse} />
+        <InputSection generateResponse={generateResponse} />
       </div>
     </div>
   );
