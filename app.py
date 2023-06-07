@@ -71,23 +71,36 @@ app.register_blueprint(auth.bp)
 #     else:
 #         return send_from_directory(app.static_folder, 'index.html')
 
+saved_messages = [{"role": "system", "content": "respond to me as if you were a helpful travel agent helping me plan a trip."}]
 
 #region ChatMessaging
 #TODO: Add login as required...
 @app.route("/api/send_user_message", methods=['POST'])
-@login_required
+# @login_required
 def send_user_message():
     # Get the user's input
     data = request.json
 
+    saved_messages.append({"role": "user", "content": data['newMessage']})
+    # Send the user's input to the ChatGPT API
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=saved_messages
+    )
+    print(completion.choices[0].message)
+    saved_messages.append({"role": "assistant", "content": completion.choices[0].message.content})
+    # Return the ChatGPT's response
+    return completion.choices[0].message
+
     # Startup chat manager
-    chat_manager = ChatManager(g.user['id'], None, GPTModel())
+    # chat_manager = ChatManager(g.user['id'], None, GPTModel())
 
     # Send message
     # TODO: update for being able to select personality
-    response = chat_manager.SendMessage(TEST_PERSONALITY_ID, data['newQuestion'])
+    # response = chat_manager.SendMessage(TEST_PERSONALITY_ID, data['newQuestion'])
 
-    print(response.content)
+    # print(response.content)
 
     # Return the ChatGPT's response
     return response

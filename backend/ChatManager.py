@@ -1,7 +1,7 @@
 
 #region Imports
-from Conversation import Conversation
-from DatabaseManager import DatabaseManager as dbm
+from backend.Conversation import Conversation
+from backend.DatabaseManager import DatabaseManager as dbm
 #endregion
 
 #region Test Data Imports

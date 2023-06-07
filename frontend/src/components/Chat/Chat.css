@@ -55,6 +55,26 @@
   color: #888;
 }
 
+.copy-icon {
+  position: absolute;
+  background-color: #000000;
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 0px;
+  right: 0px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+
+.copy-icon:hover {
+  background-color: #CA228C;
+}
+
 .messages-section {
   flex: 1;
   overflow-y: auto;
@@ -69,6 +89,8 @@
 }
 
 .form-input {
+  font-family: Arial, sans-serif;
+  /* font-weight: bold; */
   resize: none;
   flex-grow: 1;
   border: none;
@@ -83,38 +105,11 @@
   display: flex;
   color: #0084ff;
   cursor: pointer;
-  /* position: absolute;
-  background-color: #343536;
-  width: 47px;
-  height: 47px;
-  border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  bottom: 43px;
-  right: 16px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.5s ease-in-out; */
+  /* transition: all 0.5s ease-in-out; */
 }
 
-.form-button {
-  display: flex;
-  /* justify-content: center; */
-  /* align-items: center; */
-  /* border: none; */
-  /* background: transparent; */
-  /* background-color: #0084ff; */
-  /* color: white; */
-  /* color: #0084ff; */
-  /* width: 40px;
-  height: 40px; */
-  /* border-radius: 50%; */
-  
-  padding: 0px;
-}
 
-.form-button:hover {
+.send-icon:hover {
   color: #0066cc;
 }
 
@@ -126,8 +121,10 @@
 }
 
 .message-bubble {
+  /* box-sizing: border-box; */
+  white-space: pre-wrap;
   max-width: 60%;
-  padding: 5px 20px;
+  padding: 0px 15px;
   border-radius: 20px;
   margin-bottom: 10px;
 }
@@ -136,20 +133,11 @@
   align-self: flex-end;
   background-color: #0084ff;
   color: white;
+  text-align: right;
 }
 
 .message-assistant {
   align-self: flex-start;
   background-color: #f0f0f0;
+  text-align: left;
 }
-/* header {
-    background-color: white;
-    padding: 20px;
-    text-align: center;
-  }
-
-  section {
-    padding: 20px;
-    text-align: center;
-    background-color: #f8f9fa;;
-  } */

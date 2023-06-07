@@ -12,9 +12,46 @@ import myImage from '../../TestContact.jpeg'; // adjust the path as needed
 import './Chat.css';
 
 export default function Chat() {
+  const [token, setToken] = useState();
+  const [name, setName] = useState('');
+  const [newMessage, setNewMessage] = useState('');
   const [contacts, setContacts] = useState([
-    { id: 1, name: 'John Doe', image: myImage, lastMessage: 'Hey there!' },
+    { id: 1, name: 'John Doe', image: myImage, lastMessage: 'Hey there!' }, // Test Data
     { id: 2, name: 'Jane Smith', image: myImage, lastMessage: 'See you tomorrow' },
+  ]);
+  const [chatHistory, setChatHistory] = useState([
+    {
+      role: "user", // Test Data
+      message: 'Hello!',
+    },
+    {
+      role: "assistant",
+      message: "Hi, how can I help you?",
+    },
+    {
+      role: "user",
+      message: 'Hello!',
+    },
+    {
+      role: "assistant",
+      message: "Hi, how can I help you?",
+    },
+    {
+      role: "user",
+      message: 'Hello!',
+    },
+    {
+      role: "assistant",
+      message: "Hi, how can I help you?",
+    },
+    {
+      role: "user",
+      message: 'Hello!',
+    },
+    {
+      role: "assistant",
+      message: "Hi, how can I help you?",
+    }
   ]);
 
   useEffect(() => {
@@ -26,84 +63,63 @@ export default function Chat() {
     console.log(`Contact clicked: ${contactId}`);
   };
 
-  const [token, setToken] = useState();
-  const [name, setName] = useState('');
-  const [message, setMessage] = useState('');
-  const [storedValues, setStoredValues] = useState([
-    {
-      role: "User",
-      message: 'Hello!',
-    },
-    {
-      role: "Assistant",
-      message: "Hi, how can I help you?",
-    },
-    {
-      role: "User",
-      message: 'Hello!',
-    },
-    {
-      role: "Assistant",
-      message: "Hi, how can I help you?",
-    },
-    {
-      role: "User",
-      message: 'Hello!',
-    },
-    {
-      role: "Assistant",
-      message: "Hi, how can I help you?",
-    },
-    {
-      role: "User",
-      message: 'Hello!',
-    },
-    {
-      role: "Assistant",
-      message: "Hi, how can I help you?",
-    }
-  ]);
+  const sendMessage = async (newMessage) => {
 
-  const generateResponse = async (newQuestion, setNewQuestion) => {
+    // Ensure newMessage is not an empty string
+    if(!newMessage.trim()) return;
+
+    // Update the chat history with the User's newest message
+    setChatHistory(prevChatHistory => {
+      const updatedChatHistory =  [...prevChatHistory,
+      {
+        role: "user",
+        message: newMessage,
+      },
+      
+    ];
+      console.log(updatedChatHistory);
+      return updatedChatHistory;
+  });
+
+    // Call the send_user_message function on the backend
     const response = await fetch('api/send_user_message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ newQuestion }),
+      body: JSON.stringify({ newMessage }),
     });
 
     const data = await response.json();
 
-    setStoredValues(oldValues => [
+    setChatHistory(prevChatHistory => [
+      ...prevChatHistory,
       {
-        question: newQuestion,
-        answer: data.content,
+        role: "assistant",
+        message: data.content,
       },
-      ...oldValues,
+      
     ]);
-    setNewQuestion('');
+    setNewMessage('');
   }
 
   return (
     <div className='chat-container'>
       <div className="contacts-section">
-      <h1>Contacts</h1>
+      <h2>Contacts</h2>
         <ContactList contacts={contacts} onContactClick={handleContactClick} />
       </div>
       <div className="chat-wrapper">
-        <header>
-          <h1>Travel Agent Imposter</h1>
-          Click send or press enter to submit your message.
-          <br />
+        {/* <header> */}
+          <h2>Travel Agent Imposter</h2>
           We are working to add an indicator that Imposter is working on an answer.
           <br />
           Start by saying Hello!
-        </header>
+        {/* </header> */}
         <div className="messages-section">
-          <MessagesSection storedValues={storedValues} />
+          <MessagesSection chatHistory={chatHistory} />
         </div>
-        <InputSection generateResponse={generateResponse} />
+        <InputSection sendMessage={sendMessage} />
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 
 #region Imports
 import sqlite3
-from db import get_db
-from Utils import SerializeJson, DeserializeJson
+from backend.db import get_db
+from backend.Utils import SerializeJson, DeserializeJson
 #endregion
 
 # Query the DB for stuff
