@@ -1,9 +1,9 @@
-// components/AnswerSection.jsx
+// components/MessagesSection.jsx
 import React, { useEffect, useRef } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 
-const AnswerSection = ({ storedValues }) => {
+const MessagesSection = ({ chatHistory }) => {
     const copyText = (text) => {
         navigator.clipboard.writeText(text);
     };
@@ -14,31 +14,29 @@ const AnswerSection = ({ storedValues }) => {
         if (bottomRef.current) {
             bottomRef.current.scrollIntoView({ behavior: 'smooth' });
         }
-    }, [storedValues]);
+    }, [chatHistory]);
 
     return (
-        <>
-            <hr className="hr-line" />
-            <div className="answer-container">
-                {[...storedValues].reverse().map((value, index) => {
-                    return (
-                        <div className="answer-section" key={index}>
-                            <p className="question">{value.question}</p>
-                            <p className="answer">{value.answer}</p>
-                            <div
-                                className="copy-icon"
-                                onClick={() => copyText(value.answer)}
-                            >
-                                <ContentCopyIcon />
-                                <i className="fa-solid fa-copy"></i>
-                            </div>
-                        </div>
-                    )
-                })}
-                <div ref={bottomRef}></div>
-            </div>
-        </>
-    )
+        <div className='messages-section'>
+            {console.log(chatHistory)}
+            {chatHistory.map((msg, index) => (
+                <div
+                    key={index}
+                    className={`message-bubble ${msg.role === 'user' ? 'message-user' : 'message-assistant'}`}
+                >
+                    <p >{msg.message}</p>
+                    {/* <div
+                        className="copy-icon"
+                        onClick={() => copyText(msg.message)}
+                    >
+                        <ContentCopyIcon />
+                        <i className="fa-solid fa-copy"></i>
+                    </div> */}
+                </div>
+            ))}
+            <div ref={bottomRef}></div>
+        </div>
+    );
 }
 
-export default AnswerSection;
+export default MessagesSection;
