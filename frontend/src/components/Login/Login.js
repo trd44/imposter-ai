@@ -22,7 +22,7 @@ async function loginUser(credentials) {
 }
 
 
-export default function Login({ setToken }) {
+export default function Login({ setToken, setUsername }) {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -51,8 +51,10 @@ export default function Login({ setToken }) {
       }
 
       const { token } = data;
-      localStorage.setItem('username', username);
       setToken(token);
+      localStorage.setItem('token', token);
+      setUsername(username);
+      localStorage.setItem('username', username);
       navigate("/chat");
     } catch (err) {
       console.error("An error occurred while logging in", err);

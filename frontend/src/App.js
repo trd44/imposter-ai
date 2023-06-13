@@ -16,16 +16,24 @@ const App = () => {
   const [token, setToken] = useState();
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
 
+  // This effect runs once when the component mounts
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []); // The empty array means this effect runs once on mount and not on updates
+
   return (
     <div className="App">
       <Router>
-        <NavBar token={token} username={username} />
+      <NavBar token={token} setToken={setToken} username={username} setUsername={setUsername} />
 
         {!token ? (
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login setToken={setToken} />} />
-            <Route path="/register" element={<Register setToken={setToken} />} />
+            <Route path="/login" element={<Login setToken={setToken} setUsername={setUsername} />} />
+            <Route path="/register" element={<Register setToken={setToken} setUsername={setUsername} />} />
             <Route path="/chat" element={<Chat />} />
           </Routes>
         ) : (

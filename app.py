@@ -115,15 +115,6 @@ def some_function():
 
 #endregion
 
-@app.route("/data")
-def get_time():
-    return{
-        'Name':"Tim",
-        'Age':"29",
-        'Date':x,
-        "Programming":"Python"
-    }
-
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file('index.html')

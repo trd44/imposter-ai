@@ -19,7 +19,7 @@ async function registerUser(credentials) {
 }
 
 
-export default function Register({ setToken }) {
+export default function Register({ setToken, setUsername }) {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -49,6 +49,8 @@ export default function Register({ setToken }) {
 
       const { token } = data;
       setToken(token);
+      localStorage.setItem('token', token);
+      setUsername(username)
       localStorage.setItem('username', username);
       navigate("/chat")
     } catch (err) {

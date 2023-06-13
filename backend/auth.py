@@ -127,10 +127,10 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
-@bp.route('/logout')
+@bp.route('/logout', methods=['POST'])
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return jsonify({'message': 'User logged out'}), 200
 
 def login_required(view):
     @functools.wraps(view)
