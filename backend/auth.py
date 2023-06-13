@@ -58,7 +58,7 @@ def register():
                 error = f"User {username} is already registered."
 
             if error is None:
-                token = create_token(user)
+                token = create_token(username)
                 return jsonify({'token': token}), 200
             else:
                 return jsonify({'error': error}), 400
