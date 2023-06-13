@@ -103,6 +103,7 @@ class ChatManager:
         """
         # TODO: error checking
         messages = dbm.GetChatFromID(self.user_id, conv_id)
-        name, system_prompt = dbm.GetSystemPromptFromID(conv_id)
+        #name, system_prompt = dbm.GetSystemPromptFromID(conv_id)
+        name, system_prompt = "travelassist", ["respond as if you are a travel assistant", "pretend to be vin deisel when responding"]
         self.conversation_history[conv_id] = Conversation(conv_id, name, messages, system_prompt)
         return self.conversation_history[conv_id]
