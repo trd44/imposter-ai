@@ -34,7 +34,9 @@ class Conversation:
         
             message_export.append(sys_prompt)
 
-        message_export.append(self.message_log)
+        message_export = message_export + self.message_log
+        print("Exported Message")
+        print(message_export)
         return message_export
 
     def AddUserMessage(self, user_message):

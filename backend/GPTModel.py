@@ -35,6 +35,8 @@ class GPTModel:
             model=self.model_id,
             messages=conversation_messages
         )
+        print("Model Completion:")
+        print(completion)
         
         return completion.choices[0].message
 

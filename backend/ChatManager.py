@@ -37,17 +37,25 @@ class ChatManager:
         """
 
         # [1] Update the conversation via conversation id
+        print(self.conversation_history)
+        print("Sending Message For Conversation ID: ", conv_id)
         self.current_conversation = self.conversation_history[conv_id]
+        print("Appending Message")
         self.current_conversation.AddUserMessage(message)
 
         # [2] Send message
         resp = self.SendModelRequest(conv_id)
+        print("Response Received")
+        print(resp)
 
         # TODO: error handling on response
         # [3] Update conversation with response
-        self.current_conversation.AddAssistantMessage(resp.choices[0].message.content)
+        self.current_conversation.AddAssistantMessage(resp.content)
+
+        # Store History
+        self.StoreConversation(conv_id)
         
-        return resp.choices[0].message
+        return resp
 
     def UpdateSystemPrompt(self, conv_id, prompt_string):
         """
@@ -62,7 +70,7 @@ class ChatManager:
         """
         Makes a model request given the current conversation state
         """
-        self.model.MakeRequest(self.conversation_history[conv_id].ExportSavedMessages())
+        return self.model.MakeRequest(self.conversation_history[conv_id].ExportSavedMessages())
 
     def StoreConversation(self, conv_id):
         """
@@ -89,9 +97,13 @@ class ChatManager:
         """
         Updates conversation list with remove conversations
         """
+        print("Updating Conversation History")
         conversation_list = self.QuerySavedConversations()
-        if conversation_list is None:
-            self.conversation_history[TEST_PERSONALITY_ID] = Conversation(TEST_PERSONALITY_ID, TEST_PERSONALITY_NICKNAME, TEST_SYSTEM_PROMPT)
+        print("Conversation List:")
+        print(conversation_list)
+        if conversation_list is None or conversation_list == []:
+            self.conversation_history[TEST_PERSONALITY_ID] = Conversation(TEST_PERSONALITY_ID, TEST_PERSONALITY_NICKNAME, [], TEST_SYSTEM_PROMPT)
+            print("No recorded conversations. Creating first one!", "First Conversation ID: ", TEST_PERSONALITY_ID)
         else:
             for conv_id, _ in conversation_list:
                 # get conversation
@@ -102,8 +114,13 @@ class ChatManager:
         Updates conversation with the stored conversation from the database
         """
         # TODO: error checking
+        print("RETRIEVING CONVERSATION")
         messages = dbm.GetChatFromID(self.user_id, conv_id)
-        #name, system_prompt = dbm.GetSystemPromptFromID(conv_id)
-        name, system_prompt = "travelassist", ["respond as if you are a travel assistant", "pretend to be vin deisel when responding"]
+        print("Retreived Messages")
+        print(messages)
+        name, system_prompt = dbm.GetSystemPromptFromID(conv_id)
+        print("Retreived System Prompt For, ", name)
+        print(system_prompt)
+        #name, system_prompt = "travelassist", ["respond as if you are a travel assistant", "pretend to be vin deisel when responding"]
         self.conversation_history[conv_id] = Conversation(conv_id, name, messages, system_prompt)
         return self.conversation_history[conv_id]
