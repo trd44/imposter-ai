@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS post;
+-- DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS chat;
 DROP TABLE IF EXISTS personality;
 
@@ -24,12 +24,12 @@ CREATE TABLE chat (
   personality_id INTEGER NOT NULL,
   messages TEXT NOT NULL,
   UNIQUE (user_id, personality_id),
-  FOREIGN KEY (user_id) REFERENCES user (id)
+  FOREIGN KEY (user_id) REFERENCES user (id),
   FOREIGN KEY (personality_id) REFERENCES personality (id)
 );
 
 CREATE TABLE personality (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nickname TEXT NOT NULL,
-  system_prompt TEXT,
+  system_prompt TEXT
 );

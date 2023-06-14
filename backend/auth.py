@@ -58,11 +58,16 @@ def register():
                 error = f"User {username} is already registered."
 
             if error is None:
+                session.clear()
+                user = dict(user)
+                session['user_id'] = user['id']
+
                 token = create_token(user)
                 return jsonify({'token': token}), 200
             else:
+                print("e2",error)
                 return jsonify({'error': error}), 400
-        
+        print("e1",error)
         return jsonify({'error': error}), 400
 
                 
@@ -102,7 +107,6 @@ def login():
             session.clear()
             user = dict(user)
             session['user_id'] = user['id']
-            # Assuming you have a function get_token that returns a token for the user
             token = create_token(user)
             return {'token': token}, 200
         
@@ -123,10 +127,10 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
-@bp.route('/logout')
+@bp.route('/logout', methods=['POST'])
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return jsonify({'message': 'User logged out'}), 200
 
 def login_required(view):
     @functools.wraps(view)

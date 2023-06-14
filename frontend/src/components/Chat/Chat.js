@@ -15,6 +15,7 @@ export default function Chat() {
   const [token, setToken] = useState();
   const [name, setName] = useState('');
   const [newMessage, setNewMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const [contacts, setContacts] = useState([
     { id: 1, name: 'John Doe', image: myImage, lastMessage: 'Hey there!' }, // Test Data
     { id: 2, name: 'Jane Smith', image: myImage, lastMessage: 'See you tomorrow' },
@@ -66,20 +67,22 @@ export default function Chat() {
   const sendMessage = async (newMessage) => {
 
     // Ensure newMessage is not an empty string
-    if(!newMessage.trim()) return;
+    if (!newMessage.trim()) return;
+
+    setIsTyping(true);
 
     // Update the chat history with the User's newest message
     setChatHistory(prevChatHistory => {
-      const updatedChatHistory =  [...prevChatHistory,
+      const updatedChatHistory = [...prevChatHistory,
       {
         role: "user",
         message: newMessage,
       },
-      
-    ];
+
+      ];
       console.log(updatedChatHistory);
       return updatedChatHistory;
-  });
+    });
 
     // Call the send_user_message function on the backend
     const response = await fetch('api/send_user_message', {
@@ -92,13 +95,15 @@ export default function Chat() {
 
     const data = await response.json();
 
+    setIsTyping(false);
+
     setChatHistory(prevChatHistory => [
       ...prevChatHistory,
       {
         role: "assistant",
         message: data.content,
       },
-      
+
     ]);
     setNewMessage('');
   }
@@ -106,18 +111,19 @@ export default function Chat() {
   return (
     <div className='chat-container'>
       <div className="contacts-section">
-      <h2>Contacts</h2>
+        <h2>Contacts</h2>
         <ContactList contacts={contacts} onContactClick={handleContactClick} />
       </div>
       <div className="chat-wrapper">
-        {/* <header> */}
-          <h2>Travel Agent Imposter</h2>
-          We are working to add an indicator that Imposter is working on an answer.
-          <br />
-          Start by saying Hello!
-        {/* </header> */}
+        <h2>Travel Agent Imposter</h2>
+        Start by saying Hello!
         <div className="messages-section">
           <MessagesSection chatHistory={chatHistory} />
+          {isTyping && <div className="message-bubble message-assistant">
+            <p className="typing-text">Imposter is typing</p>
+          </div>}
+
+
         </div>
         <InputSection sendMessage={sendMessage} />
       </div>
