@@ -99,7 +99,8 @@ def send_user_message():
 
     # Send message
     # TODO: update for being able to select personality
-    response = chat_manager.SendMessage(TEST_PERSONALITY_ID, data['newQuestion'])
+    response = chat_manager.SendMessage(TEST_PERSONALITY_ID, data['newMessage'])
+    print("Sent Message")
 
     print(response.content)
 
