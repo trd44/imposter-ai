@@ -85,7 +85,7 @@ export default function Chat() {
     });
 
     // Call the send_user_message function on the backend
-    const response = await fetch('api/old/send_user_message', {
+    const response = await fetch('api/send_user_message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
