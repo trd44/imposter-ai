@@ -25,12 +25,13 @@ from Presets.PresetData import TEST_PERSONALITY_ID
 
 # Initialize Flask app and CORS, set up API and secret key
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
-CORS(app)
+# CORS(app)
 api = Api(app)
 app.config.from_mapping(
     SECRET_KEY='dev',
     DATABASE=os.path.join(app.instance_path, 'imposter.sqlite'),
 )
+
 
 # Ensure the instance folder exists
 try:
@@ -46,6 +47,7 @@ cb.load_openai_api_key()
 # Serve the static files in the build directory
 @app.route('/', defaults={'path': ''})
 def serve(path):
+    print(path)
     return send_from_directory(app.static_folder,'index.html')
 
 # Handle favicon requests
@@ -96,6 +98,7 @@ def fetch_chat_history():
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file('index.html')
+
 
 # Main entry point
 if __name__ == "__main__":
