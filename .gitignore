@@ -1,3 +1,5 @@
 .venv
 __pycache__
 API_KEY
+node_modules*
+frontend/src/TestContact.jpeg
