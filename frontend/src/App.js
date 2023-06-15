@@ -1,7 +1,7 @@
 // src/App.js
 
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Link, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Routes, Navigate, useNavigate } from 'react-router-dom';
 
 import Chat from './components/Chat/Chat'
 import Footer from './components/Footer/Footer';
@@ -22,7 +22,7 @@ const App = () => {
     if (storedToken) {
       setToken(storedToken);
     }
-  }, []); // The empty array means this effect runs once on mount and not on updates
+  }, []); // The empty array means this effect runs once on mount and not on updates  
 
   return (
     <div className="App">
@@ -34,7 +34,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login setToken={setToken} setUsername={setUsername} />} />
             <Route path="/register" element={<Register setToken={setToken} setUsername={setUsername} />} />
-            <Route path="/chat" element={<Chat />} />
+            {/* <Route path="/chat" element={<Chat />} /> */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         ) : (

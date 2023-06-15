@@ -24,7 +24,7 @@ const MessagesSection = ({ chatHistory }) => {
                     key={index}
                     className={`message-bubble ${msg.role === 'user' ? 'message-user' : 'message-assistant'}`}
                 >
-                    <p >{msg.message}</p>
+                    <p >{msg.content}</p>
                     {/* <div
                         className="copy-icon"
                         onClick={() => copyText(msg.message)}

@@ -17,46 +17,35 @@ export default function Chat() {
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [contacts, setContacts] = useState([
-    { id: 1, name: 'John Doe', image: myImage, lastMessage: 'Hey there!' }, // Test Data
-    { id: 2, name: 'Jane Smith', image: myImage, lastMessage: 'See you tomorrow' },
+    { id: 1, name: 'Travel Agent', image: myImage, lastMessage: 'Hey there!' }, // Test Data
+    // { id: 2, name: 'Jane Smith', image: myImage, lastMessage: 'See you tomorrow' },
   ]);
-  const [chatHistory, setChatHistory] = useState([
-    {
-      role: "user", // Test Data
-      message: 'Hello!',
-    },
-    {
-      role: "assistant",
-      message: "Hi, how can I help you?",
-    },
-    {
-      role: "user",
-      message: 'Hello!',
-    },
-    {
-      role: "assistant",
-      message: "Hi, how can I help you?",
-    },
-    {
-      role: "user",
-      message: 'Hello!',
-    },
-    {
-      role: "assistant",
-      message: "Hi, how can I help you?",
-    },
-    {
-      role: "user",
-      message: 'Hello!',
-    },
-    {
-      role: "assistant",
-      message: "Hi, how can I help you?",
-    }
-  ]);
+  const [chatHistory, setChatHistory] = useState([]);
+
+  console.log('Chat component function is running');
 
   useEffect(() => {
-    // TODO: Fetch contacts from the server and setContacts
+    // Fetch contacts from the server and setContacts
+    const fetchChatHistory = async () => {
+      console.log("trying to call api/fetch_chat_history");
+      try {
+        const response = await fetch('api/fetch_chat_history', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if(!response.ok) {
+          throw new Error('HTTP error! status: ${response.status}');
+        }
+        const chatHistory = await response.json();
+        setChatHistory(chatHistory);
+      } catch (error) {
+        console.error('Failed to fetch chat history: ', error);
+      }
+    };
+
+    fetchChatHistory();
   }, []);
 
   const handleContactClick = (contactId) => {
@@ -76,7 +65,7 @@ export default function Chat() {
       const updatedChatHistory = [...prevChatHistory,
       {
         role: "user",
-        message: newMessage,
+        content: newMessage,
       },
 
       ];
@@ -101,7 +90,7 @@ export default function Chat() {
       ...prevChatHistory,
       {
         role: "assistant",
-        message: data.content,
+        content: data.content,
       },
 
     ]);
