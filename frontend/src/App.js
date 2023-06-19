@@ -42,7 +42,7 @@ const App = () => {
         {/* If user is authenticated, show chat route in addition to home */}
         {!token ? (
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home token={token}/>} />
             <Route path="/login" element={<Login setToken={setToken} setUsername={setUsername} />} />
             <Route path="/register" element={<Register setToken={setToken} setUsername={setUsername} />} />
             {/* If any other path is visited, redirect to home */}
@@ -50,7 +50,7 @@ const App = () => {
           </Routes>
         ) : (
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home token={token}/>} />
             <Route path="/chat" element={<Chat />} />
             {/* If any other path is visited, redirect to home */}
             <Route path="*" element={<Navigate to="/" />} />

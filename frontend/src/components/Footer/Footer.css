@@ -3,3 +3,10 @@ footer {
     padding: 10px;
     text-align: center;
 }
+
+.social-icon {
+    margin-left: 4px;
+    margin-right: 4px;
+    color: #333; /* Or any color you want */
+    vertical-align: middle; /* Adjusts vertical positioning */
+  }

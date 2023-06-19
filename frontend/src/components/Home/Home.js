@@ -5,15 +5,23 @@ import { useNavigate } from 'react-router-dom';
 
 import './Home.css';
 
-const Home = () => {
+const Home = ({ token }) => {
   const navigate = useNavigate();
+
+  const handleStartChatting = () => {
+    if (token) { // if token is present, user is logged in
+      navigate("/chat");
+    } else { // if token is not present, user is not logged in
+      navigate("/register");
+    }
+  };
 
   return (
     <div className='home-container'>
       <header>
         <h1>Welcome to imposter.ai 🤖</h1>
         <p>Start conversations with AI in unique roles – from travel agents to historical figures.</p>
-        <button onClick={() => navigate("/chat")}>Start Chatting</button>
+        <button onClick={handleStartChatting}>Start Chatting</button>
       </header>
 
       <section>
