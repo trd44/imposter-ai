@@ -22,7 +22,7 @@ async function loginUser(credentials) {
 }
 
 
-export default function Login({ setToken, setUsername }) {
+export default function Login({ onSuccessfulLogin }) {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -51,10 +51,8 @@ export default function Login({ setToken, setUsername }) {
       }
 
       const { token } = data;
-      setToken(token);
-      localStorage.setItem('token', token);
-      setUsername(username);
-      localStorage.setItem('username', username);
+
+      onSuccessfulLogin(token, username);
       navigate("/chat");
     } catch (err) {
       console.error("An error occurred while logging in", err);
@@ -84,6 +82,7 @@ export default function Login({ setToken, setUsername }) {
           <button type="submit">Submit</button>
         </div>
       </form>
+      <p>Don't have an account? <Link to="/register">Register</Link></p>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   )

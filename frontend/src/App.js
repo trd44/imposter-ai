@@ -15,6 +15,7 @@ import "./App.css";
 
 // Main App component
 const App = () => {
+  const [loading, setLoading] = useState(true);
   // State for storing user token
   const [token, setToken] = useState();
 
@@ -30,7 +31,18 @@ const App = () => {
     if (storedToken) {
       setToken(storedToken);
     }
+    setLoading(false); // Set loading to false after checking for token
   }, []); // This effect runs once on mount and not on updates  
+
+  if (loading) {
+    return <div>Loading...</div>; // Replace with your actual loading component or spinner
+  }
+  const handleSuccessfulLogin = (token, username) => {
+    setToken(token);
+    localStorage.setItem('token', token);
+    setUsername(username);
+    localStorage.setItem('username', username);
+  }
 
   return (
     <div className="App">
@@ -43,7 +55,7 @@ const App = () => {
         {!token ? (
           <Routes>
             <Route path="/" element={<Home token={token}/>} />
-            <Route path="/login" element={<Login setToken={setToken} setUsername={setUsername} />} />
+            <Route path="/login" element={<Login onSuccessfulLogin={handleSuccessfulLogin} />} />
             <Route path="/register" element={<Register setToken={setToken} setUsername={setUsername} />} />
             {/* If any other path is visited, redirect to home */}
             <Route path="*" element={<Navigate to="/" />} />
