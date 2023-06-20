@@ -30,24 +30,25 @@ const Home = ({ token }) => {
       </section>
 
       <br /> {/* This is to make the sections look separate but there is probably a better way to do this with CSS. */}
-      
+
       <section>
         <h2>Updates</h2>
         <p>We have our first personality for ChatGPT to impersonate, a travel agent, up and running. Please try it out!
           <br />
           <br />
           New personalities will be coming in the near future.
-          <br />
-          <br />
-          If you have any suggestions, or want to reach out in general please email us at <a href="mailto:imposter.ai.2023@gmail.com" target='_blank' rel='noopener noreferrer'>imposter.ai.2023@gmail.com</a> 
         </p>
       </section>
 
       <br /> {/* This is to make the sections look separate but there is probably a better way to do this with CSS. */}
-      
+
       <section>
         <h2>About Us</h2>
-        <p>We're two friends passionate about AI and its potential...</p>
+        <p>We're two friends, Tim and Christian, passionate about AI and its potential...
+        <br />
+        <br />
+        If you have any suggestions, questions, or want to reach out in general please email us at <a href="mailto:imposter.ai.2023@gmail.com" target='_blank' rel='noopener noreferrer'>imposter.ai.2023@gmail.com</a>
+        </p>
       </section>
     </div>
   );
