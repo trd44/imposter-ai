@@ -1,7 +1,7 @@
 // src/components/Register/Register.js
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import './Register.css';
 
@@ -81,6 +81,7 @@ export default function Register({ setToken, setUsername }) {
           <button type="submit">Submit</button>
         </div>
       </form>
+      <p>Already have an account? <Link to="/login">Login</Link></p>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   )

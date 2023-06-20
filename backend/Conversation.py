@@ -34,10 +34,16 @@ class Conversation:
         
             message_export.append(sys_prompt)
 
-        message_export = message_export + self.message_log
-        print("Exported Message")
-        print(message_export)
-        return message_export
+        # print("Exported Message")
+        # print(message_export)
+
+        if self.message_log is None:
+            return message_export
+        
+        else:
+            # print("self.message_log")
+            # print(self.message_log)
+            return message_export + self.message_log
 
     def AddUserMessage(self, user_message):
         self.message_log.append({"role": "user", "content": user_message})
