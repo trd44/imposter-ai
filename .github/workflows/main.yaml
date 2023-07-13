@@ -40,4 +40,6 @@ jobs:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
 
     - name: Deploy to Heroku
-      run: git push heroku main
+      run: |
+        heroku git:remote -a imposter-ai
+        git push heroku main
