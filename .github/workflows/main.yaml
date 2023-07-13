@@ -1,0 +1,39 @@
+name: CI/CD Pipeline
+on: 
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+
+    - name: Install npm dependencies
+      run: npm ci
+
+    - name: Build React App
+      run: npm run build
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Install pip dependencies
+      run: pip install -r requirements.txt
+
+    - name: Login to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_email: ${{secrets.HEROKU_EMAIL}}
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+
+    - name: Deploy to Heroku
+      run: git push heroku main
