@@ -8,7 +8,7 @@ import './Footer.css';
 const Footer = () => {
   return (
     <footer className='Footer'>
-      ?Imposter.AI © 2023 
+      Imposter.AI © 2023 
       | <a href="mailto:imposter.ai.2023@gmail.com" target='_blank' rel='noopener noreferrer'>Contact Us</a> | 
       Follow Tim 
       <a href="https://www.linkedin.com/in/duggant/" target="_blank" rel="noopener noreferrer" className="social-icon">
