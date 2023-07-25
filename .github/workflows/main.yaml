@@ -15,6 +15,13 @@ jobs:
       with:
         node-version: '18'
 
+    - name: Cache npm dependencies
+      uses: actions/cache@v2
+      with:
+        path: frontend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: ${{ runner.os }}-node-
+
     - name: Install npm dependencies
       run: |
         cd frontend
@@ -40,7 +47,3 @@ jobs:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
         team: gtb4l
         heroku_app_name: "imposter-ai"
-
-
-    # - name: Deploy to Heroku
-    #   run: git push heroku main
