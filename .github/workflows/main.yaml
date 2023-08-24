@@ -47,7 +47,7 @@ jobs:
     - name: Install pip dependencies
       run: pip install -r requirements.txt
 
-    - name: Login to Heroku
+    - name: Deploy to Heroku
       uses: akhileshns/heroku-deploy@v3.12.14
       with:
         heroku_email: ${{secrets.HEROKU_EMAIL}}
