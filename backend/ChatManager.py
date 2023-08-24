@@ -44,17 +44,21 @@ class ChatManager:
         self.current_conversation.AddUserMessage(message)
 
         # [2] Send message
-        resp = self.SendModelRequest(conv_id)
-        print("Response Received")
-        print(resp)
-
         # TODO: error handling on response
-        # [3] Update conversation with response
-        self.current_conversation.AddAssistantMessage(resp.content)
+        resp = self.SendModelRequest(conv_id)
+        if resp:
+            print("Response Received")
+            print(resp)
 
-        # Store History
-        self.StoreConversation(conv_id)
-        
+            # [3] Update conversation with response
+            self.current_conversation.AddAssistantMessage(resp.content)
+
+            # Store History
+            self.StoreConversation(conv_id)
+        else:
+            error_msg = "... Imposter does not feel like responding at the current moment ... please try again later!"
+            resp = {"content": error_msg}
+
         return resp
 
     def UpdateSystemPrompt(self, conv_id, prompt_string):
