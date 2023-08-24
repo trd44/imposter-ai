@@ -44,9 +44,9 @@ class GPTModel:
             print("Model Completion:")
             print(completion)
             ret = completion.choices[0].message
-        except openai.error.OpenAIApiError as e:
-            # Handle all errors
-            print(f"OpenAI API returned an API Error: {e}")
+        # except openai.error.OpenAIApiError as e:
+        #     # Handle all errors
+        #     print(f"OpenAI API returned an API Error: {e}")
         except Exception as e:
             print(f"An unknown error occured: {e}")
         
