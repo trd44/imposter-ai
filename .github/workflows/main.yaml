@@ -1,0 +1,56 @@
+name: CI/CD Pipeline
+on: 
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+
+    - name: Cache npm dependencies
+      uses: actions/cache@v2
+      with:
+        path: frontend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: ${{ runner.os }}-node-
+
+    - name: Install npm dependencies
+      run: |
+        cd frontend
+        npm ci
+
+    - name: Build React App
+      run: |
+        cd frontend
+        npm run build
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+
+    - name: Install pip dependencies
+      run: pip install -r requirements.txt
+
+    - name: Login to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.14
+      with:
+        heroku_email: ${{secrets.HEROKU_EMAIL}}
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        team: gtb4l
+        heroku_app_name: "imposter-ai"
