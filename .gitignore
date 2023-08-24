@@ -2,5 +2,4 @@
 __pycache__
 API_KEY
 node_modules*
-frontend/src/TestContact.jpeg
-frontend/build/
+# frontend/src/TestContact.jpeg
