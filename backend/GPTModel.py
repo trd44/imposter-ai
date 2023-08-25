@@ -43,10 +43,6 @@ class GPTModel:
             print(completion)
             ret = completion.choices[0].message
         ### API ERROR HANDLING
-        except openai.error.APIError as e:
-            #Handle API error here, e.g. retry or log
-            print(f"OpenAI API returned an API Error: {e}")
-        
         ## [SERVICE ERRORS]
         except openai.error.APIConnectionError as e:
             #Handle connection error here
@@ -79,6 +75,11 @@ class GPTModel:
         except openai.error.InvalidRequestError as e:
             #Handle invalid request error
             print(f"OpenAI API request is invalid: {e}")   
+
+        ## [GENERAL API ERROR]
+        except openai.error.APIError as e:
+            #Handle API error here, e.g. retry or log
+            print(f"OpenAI API returned an API Error: {e}")
 
         ## [UNKNOWN ERROR]
         except Exception as e:
