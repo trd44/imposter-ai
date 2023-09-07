@@ -64,7 +64,7 @@ app.register_blueprint(auth.bp)
 #region ChatMessaging
 
 # API endpoint to handle sending user messages
-# TODO: update request.json to contain the personality ID as well
+# TODO: update request.json to contain the personality ID as well [COMPLETED]
 @app.route("/api/send_user_message", methods=['POST'])
 @login_required
 def send_user_message():
@@ -83,14 +83,20 @@ def send_user_message():
     return response
 
 # API endpoint to fetch chat history
-# TODO: request should specify what personality to request history from
-@app.route("/api/fetch_chat_history", methods=['GET'])
+# TODO: request should specify what personality to request history from [COMPLETED]
+@app.route("/api/fetch_chat_history", methods=['POST'])
 @login_required
 def fetch_chat_history():
+    # Get user's input
+    data = request.json
+
     # Startup chat manager
     chat_manager = ChatManager(g.user['id'], None, GPTModel())
-    conversation = chat_manager.RetrieveConversation(TEST_PERSONALITY_ID)
 
+    # Retreive conversation given ID
+    conversation = chat_manager.RetrieveConversation(data['id'])
+
+    # Export conversation history
     message_history = conversation.ExportSavedMessages()
 
     return message_history
