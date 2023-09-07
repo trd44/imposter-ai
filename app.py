@@ -83,6 +83,7 @@ def send_user_message():
     return response
 
 # API endpoint to fetch chat history
+# TODO: request should specify what personality to request history from
 @app.route("/api/fetch_chat_history", methods=['GET'])
 @login_required
 def fetch_chat_history():
