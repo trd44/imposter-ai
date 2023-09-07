@@ -70,7 +70,7 @@ useEffect(() => {
     console.log(`Contact clicked: ${contactId}`);
   };
 
-  const sendMessage = async (newMessage) => {
+  const sendMessage = async (newMessage, id) => {
 
     // Ensure newMessage is not an empty string
     if (!newMessage.trim()) return;
@@ -91,17 +91,24 @@ useEffect(() => {
     });
 
     // Call the send_user_message function on the backend
+    //    * The fetch request below is a POST request to "/api/send_user_message"
+    //    * The data sent is 'newMessage' which is assigned the value of whatever
+    //    * the user has entered into the chat input field.
     const response = await fetch('api/send_user_message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ newMessage }),
+      body: JSON.stringify({ newMessage, id}), // Include the newMessage and ID in the body sent to the server
     });
 
     const data = await response.json();
 
     setIsTyping(false);
+
+    // TODO: Verify that response id matches the request ID, e.g. data.id == id
+    // 1) Only update chat history if id's match (this will impact what is displayed...)
+    // 2) Only display response if id's match (1 should accomplish 2)
 
     setChatHistory(prevChatHistory => [
       ...prevChatHistory,
@@ -131,7 +138,10 @@ useEffect(() => {
 
 
         </div>
-        <InputSection sendMessage={sendMessage} />
+        /* The '0' is a placeholder for the message id
+         * TODO: replace the hardcoded ID with a state variable tracking ID
+         */
+        <InputSection sendMessage={(message) => sendMessage(message, 0)} />
       </div>
     </div>
   );
