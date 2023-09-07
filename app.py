@@ -64,6 +64,7 @@ app.register_blueprint(auth.bp)
 #region ChatMessaging
 
 # API endpoint to handle sending user messages
+# TODO: update request.json to contain the personality ID as well
 @app.route("/api/send_user_message", methods=['POST'])
 @login_required
 def send_user_message():
@@ -74,7 +75,8 @@ def send_user_message():
     chat_manager = ChatManager(g.user['id'], None, GPTModel())
 
     # Send message
-    # TODO: update for being able to select personality
+    # TODO: update for being able to select personality (request body needs to contain personality ID)
+    # potentially: data['id']
     response = chat_manager.SendMessage(TEST_PERSONALITY_ID, data['newMessage'])
 
     # Return ChatGPT's response
