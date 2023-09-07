@@ -59,6 +59,9 @@ class ChatManager:
             error_msg = "... Imposter does not feel like responding at the current moment ... please try again later!"
             resp = {"content": error_msg}
 
+        # [4] Include id in response payload
+        resp['id'] = conv_id
+
         return resp
 
     def UpdateSystemPrompt(self, conv_id, prompt_string):

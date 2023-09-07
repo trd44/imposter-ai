@@ -76,8 +76,8 @@ def send_user_message():
 
     # Send message
     # TODO: update for being able to select personality (request body needs to contain personality ID)
-    # potentially: data['id']
-    response = chat_manager.SendMessage(TEST_PERSONALITY_ID, data['newMessage'])
+    # potentially: data['id'] [COMPLETED]
+    response = chat_manager.SendMessage(data['id'], data['newMessage'])
 
     # Return ChatGPT's response
     return response
