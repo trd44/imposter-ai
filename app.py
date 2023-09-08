@@ -88,12 +88,15 @@ def send_user_message():
 @login_required
 def fetch_chat_history():
     # Get user's input
+    print("fetch_chat_history, retreiving data from json")
     data = request.json
 
     # Startup chat manager
+    print("fetch_chat_history, setting up chat manager")
     chat_manager = ChatManager(g.user['id'], None, GPTModel())
 
     # Retreive conversation given ID
+    print(f"fetch_chat_history, personality_id: {data['id']}, type: {type(data['id'])}")
     conversation = chat_manager.RetrieveConversation(data['id'])
 
     # Export conversation history
