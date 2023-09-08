@@ -59,6 +59,9 @@ class ChatManager:
             error_msg = "... Imposter does not feel like responding at the current moment ... please try again later!"
             resp = {"content": error_msg}
 
+        # [4] Include id in response payload
+        resp['id'] = conv_id
+
         return resp
 
     def UpdateSystemPrompt(self, conv_id, prompt_string):
@@ -105,6 +108,7 @@ class ChatManager:
         conversation_list = self.QuerySavedConversations()
         print("Conversation List:")
         print(conversation_list)
+        #TODO: should create this default conversation for every personality
         if conversation_list is None or conversation_list == []:
             self.conversation_history[TEST_PERSONALITY_ID] = Conversation(TEST_PERSONALITY_ID, TEST_PERSONALITY_NICKNAME, [], TEST_SYSTEM_PROMPT)
             print("No recorded conversations. Creating first one!", "First Conversation ID: ", TEST_PERSONALITY_ID)

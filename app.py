@@ -64,6 +64,7 @@ app.register_blueprint(auth.bp)
 #region ChatMessaging
 
 # API endpoint to handle sending user messages
+# TODO: update request.json to contain the personality ID as well [COMPLETED]
 @app.route("/api/send_user_message", methods=['POST'])
 @login_required
 def send_user_message():
@@ -74,20 +75,31 @@ def send_user_message():
     chat_manager = ChatManager(g.user['id'], None, GPTModel())
 
     # Send message
-    # TODO: update for being able to select personality
-    response = chat_manager.SendMessage(TEST_PERSONALITY_ID, data['newMessage'])
+    # TODO: update for being able to select personality (request body needs to contain personality ID)
+    # potentially: data['id'] [COMPLETED]
+    response = chat_manager.SendMessage(data['id'], data['newMessage'])
 
     # Return ChatGPT's response
     return response
 
 # API endpoint to fetch chat history
-@app.route("/api/fetch_chat_history", methods=['GET'])
+# TODO: request should specify what personality to request history from [COMPLETED]
+@app.route("/api/fetch_chat_history", methods=['POST'])
 @login_required
 def fetch_chat_history():
-    # Startup chat manager
-    chat_manager = ChatManager(g.user['id'], None, GPTModel())
-    conversation = chat_manager.RetrieveConversation(TEST_PERSONALITY_ID)
+    # Get user's input
+    print("fetch_chat_history, retreiving data from json")
+    data = request.json
 
+    # Startup chat manager
+    print("fetch_chat_history, setting up chat manager")
+    chat_manager = ChatManager(g.user['id'], None, GPTModel())
+
+    # Retreive conversation given ID
+    print(f"fetch_chat_history, personality_id: {data['id']}, type: {type(data['id'])}")
+    conversation = chat_manager.RetrieveConversation(data['id'])
+
+    # Export conversation history
     message_history = conversation.ExportSavedMessages()
 
     return message_history
