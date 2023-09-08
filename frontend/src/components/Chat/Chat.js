@@ -138,9 +138,8 @@ useEffect(() => {
 
 
         </div>
-        /* The '0' is a placeholder for the message id
-         * TODO: replace the hardcoded ID with a state variable tracking ID
-         */
+        {/* The '0' is a placeholder for the message id
+        TODO: replace the hardcoded ID with a state variable tracking ID */}
         <InputSection sendMessage={(message) => sendMessage(message, 0)} />
       </div>
     </div>
