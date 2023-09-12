@@ -16,6 +16,7 @@ export default function Chat() {
   const [name, setName] = useState('');
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [sendButtonEnabled, setSendButtonEnabled] = useState(true);
 
   //TODO: mMake a function like fetchChatHistory where it requests all the personalities from the database and adds them
   //currently when we access contacts, we just index at zero it seems.
@@ -27,35 +28,35 @@ export default function Chat() {
 
   console.log('Chat component function is running');
 
-useEffect(() => {
-  // Fetch contacts from the server and setContacts
-  // TODO: provide which personality id to get conversation for. Assume that conversation exists in backend even if not talked to before.
-  // Backend handles new covnersations [COMPLETED]
+  useEffect(() => {
+    // Fetch contacts from the server and setContacts
+    // TODO: provide which personality id to get conversation for. Assume that conversation exists in backend even if not talked to before.
+    // Backend handles new covnersations [COMPLETED]
 
-  const fetchChatHistory = async () => {
-    console.log("trying to call api/fetch_chat_history");
-    try {
-      const response = await fetch('api/fetch_chat_history', {
-        method: 'POST',  // Changed from GET to POST
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: 0  // TODO: replace hardcoded id with dynamic ID
-        })
-      });
-      if(!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    const fetchChatHistory = async () => {
+      console.log("trying to call api/fetch_chat_history");
+      try {
+        const response = await fetch('api/fetch_chat_history', {
+          method: 'POST',  // Changed from GET to POST
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: 0  // TODO: replace hardcoded id with dynamic ID
+          })
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const chatHistory = await response.json();
+        setChatHistory(chatHistory);
+      } catch (error) {
+        console.error('Failed to fetch chat history: ', error);
       }
-      const chatHistory = await response.json();
-      setChatHistory(chatHistory);
-    } catch (error) {
-      console.error('Failed to fetch chat history: ', error);
-    }
-  };
+    };
 
-  fetchChatHistory();
-}, []);
+    fetchChatHistory();
+  }, []);
 
 
   //TODO: This is where the user clicks the contact. does not swap anything. Would have to update this function
@@ -75,6 +76,7 @@ useEffect(() => {
     // Ensure newMessage is not an empty string
     if (!newMessage.trim()) return;
 
+    setSendButtonEnabled(false);
     setIsTyping(true);
 
     // Update the chat history with the User's newest message
@@ -99,12 +101,13 @@ useEffect(() => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ newMessage, id}), // Include the newMessage and ID in the body sent to the server
+      body: JSON.stringify({ newMessage, id }), // Include the newMessage and ID in the body sent to the server
     });
 
     const data = await response.json();
 
     setIsTyping(false);
+    setSendButtonEnabled(true);
 
     // TODO: Verify that response id matches the request ID, e.g. data.id == id
     // 1) Only update chat history if id's match (this will impact what is displayed...)
@@ -140,7 +143,7 @@ useEffect(() => {
         </div>
         {/* The '0' is a placeholder for the message id
         TODO: replace the hardcoded ID with a state variable tracking ID */}
-        <InputSection sendMessage={(message) => sendMessage(message, 0)} />
+        <InputSection disabled={!sendButtonEnabled} sendMessage={(message) => sendMessage(message, 0)} />
       </div>
     </div>
   );
