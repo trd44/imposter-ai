@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import SendIcon from '@mui/icons-material/Send';
 
-function InputSection({ sendMessage }) {
+function InputSection({ sendMessage, disabled }) {
   const [message, setMessage] = useState('');
 
   const getNumberOfLines = (text) => {
@@ -40,11 +40,12 @@ function InputSection({ sendMessage }) {
           onKeyDown={handleKeyDown}
           onChange={e => setMessage(e.target.value)}
           placeholder="Type a message..."
+          disabled={disabled}
         />
       </div>
       <div
         className="send-icon"
-        onClick={(e) => handleSubmit(e)}
+        onClick={!disabled ? (e) => handleSubmit(e) : null}  // Disable onClick if disabled
       >
         <SendIcon />
       </div>
