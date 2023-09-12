@@ -61,6 +61,13 @@ db.init_app(app)
 from backend import auth
 app.register_blueprint(auth.bp)
 
+#region AssetsHandling
+@app.route('/backend_assets/<path:path>')
+def backend_assets(path):
+    return send_from_directory('backend/static/assets', path)
+#endregion
+
+
 #region ChatMessaging
 
 # API endpoint to handle sending user messages

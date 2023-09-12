@@ -6,9 +6,6 @@ import InputSection from './InputSection';
 import MessagesSection from './MessagesSection';
 import ContactList from './ContactList';
 
-import myImage from '../../TestContact.jpeg'; // adjust the path as needed
-
-
 import './Chat.css';
 
 export default function Chat() {
@@ -18,10 +15,15 @@ export default function Chat() {
   const [isTyping, setIsTyping] = useState(false);
   const [sendButtonEnabled, setSendButtonEnabled] = useState(true);
 
+const getImageUrl = (imageName) => {
+    console.log('Fetching Image: ', imageName);
+    return `/backend_assets/${imageName}`
+}
+
   //TODO: mMake a function like fetchChatHistory where it requests all the personalities from the database and adds them
   //currently when we access contacts, we just index at zero it seems.
   const [contacts, setContacts] = useState([
-    { id: 1, name: 'Travel Agent', image: myImage, lastMessage: 'Hey there!' }, // Test Data
+    { id: 1, name: 'Travel Agent', image: getImageUrl('TestContact.jpeg'), lastMessage: 'Hey there!' }, // Test Data
     // { id: 2, name: 'Jane Smith', image: myImage, lastMessage: 'See you tomorrow' },
   ]);
   const [chatHistory, setChatHistory] = useState([]);
