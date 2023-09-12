@@ -14,11 +14,12 @@ export default function Chat() {
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [sendButtonEnabled, setSendButtonEnabled] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(window.innerWidth > 768);
 
-const getImageUrl = (imageName) => {
+  const getImageUrl = (imageName) => {
     console.log('Fetching Image: ', imageName);
     return `/backend_assets/${imageName}`
-}
+  }
 
   //TODO: mMake a function like fetchChatHistory where it requests all the personalities from the database and adds them
   //currently when we access contacts, we just index at zero it seems.
@@ -128,7 +129,14 @@ const getImageUrl = (imageName) => {
 
   return (
     <div className='chat-container'>
-      <div className="contacts-section">
+
+      <div className="menu-toggle-btn">
+        <button onClick={() => setMenuOpen(!menuOpen)}>
+          Toggle Contacts
+        </button>
+      </div>
+
+      <div className={`contacts-section ${menuOpen ? 'open' : ''}`}>
         <h2>Contacts</h2>
         <ContactList contacts={contacts} onContactClick={handleContactClick} />
       </div>

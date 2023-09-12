@@ -11,6 +11,27 @@
   border-right: 1px solid #ccc;
   padding: 20px;
   text-align: left;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* For screens below 768px (you can adjust this breakpoint) */
+@media (max-width: 768px) {
+  .contacts-section {
+    transform: translateX(-100%);
+  }
+  .contacts-section.open {
+    transform: translateX(0);
+  }
+}
+
+.menu-toggle-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .menu-toggle-btn {
+    display: block;
+  }
 }
 
 .chat-wrapper {
