@@ -1,41 +1,52 @@
 .chat-container {
+  position: relative;
+  /* display: flex;
+  flex-direction: row;
+  height: calc(100vh - 100px);
+  justify-content: space-between; */
+}
+
+.hamburger {
+  position: absolute;
+  /* top: 10px; */
+  left: 10px;
+  z-index: 10;
+}
+
+.main-content {
   display: flex;
   flex-direction: row;
   height: calc(100vh - 100px);
-  justify-content: space-between;
+  position: relative;
+}
+
+.main-content.menu-open .chat-wrapper {
+  background: rgba(0, 0, 0, 0.25);  /* Semi-transparent overlay */
+  pointer-events: none; /* Make sure user can't interact with chat when menu is open */
 }
 
 .contacts-section {
-  width: 22.5%;
+  width: 200px;
+  max-height: calc(100vh - 60px);  /* considering hamburger button and some margin */
   overflow-y: auto;
   border-right: 1px solid #ccc;
-  padding: 20px;
+  padding: 15px;
   text-align: left;
+  position: absolute;
+  top: 55px;
+  left: 0;
+  background-color: white;
+  transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
+  z-index: 5;
 }
 
-/* For screens below 768px (you can adjust this breakpoint) */
-@media (max-width: 768px) {
-  .contacts-section {
-    transform: translateX(-100%);
-  }
-  .contacts-section.open {
-    transform: translateX(0);
-  }
-}
-
-.menu-toggle-btn {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .menu-toggle-btn {
-    display: block;
-  }
+.contacts-section.open {
+  transform: translateX(0);
 }
 
 .chat-wrapper {
-  width: 77.5%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -109,6 +120,11 @@
   border-radius: 20px;
 }
 
+.main-content.menu-open .chat-wrapper .input-form-section {
+  opacity: 0.25; /* Adjust this value as needed */
+}
+
+
 .form-input {
   font-family: Arial, sans-serif;
   font-size: medium;
@@ -155,16 +171,34 @@
   text-align: right;
 }
 
+.main-content.menu-open .chat-wrapper .message-user {
+  opacity: 0.25; /* Adjust this value as needed */
+}
+
+
 .message-assistant {
   align-self: flex-start;
   background-color: #f0f0f0;
   text-align: left;
 }
 
+.main-content.menu-open .chat-wrapper .message-assistant {
+  opacity: 0.25; /* Adjust this value as needed */
+}
+
+
 @keyframes flashingText {
-  0% { opacity: 0.2; }
-  50% { opacity: 0.5; }
-  100% { opacity: 0.2; }
+  0% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0.2;
+  }
 }
 
 .typing-text {
