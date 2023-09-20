@@ -22,6 +22,19 @@ const App = () => {
   // State for storing username, initialised with username from local storage if it exists
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
 
+  useEffect(() => {
+    document.title = "imposter.ai";
+  }, []);
+
+  // useEffect(() => {
+  //   const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+  //   link.type = 'image/x-icon';
+  //   link.rel = 'shortcut icon';
+  //   link.href = '%PUBLIC_URL%/favicon.ico';
+    
+  //   document.getElementsByTagName('head')[0].appendChild(link);
+  // }, []);
+
   // This effect runs once when the component mounts
   useEffect(() => {
     // Check if a user token is stored in local storage

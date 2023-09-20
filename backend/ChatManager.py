@@ -44,17 +44,24 @@ class ChatManager:
         self.current_conversation.AddUserMessage(message)
 
         # [2] Send message
-        resp = self.SendModelRequest(conv_id)
-        print("Response Received")
-        print(resp)
-
         # TODO: error handling on response
-        # [3] Update conversation with response
-        self.current_conversation.AddAssistantMessage(resp.content)
+        resp = self.SendModelRequest(conv_id)
+        if resp:
+            print("Response Received")
+            print(resp)
 
-        # Store History
-        self.StoreConversation(conv_id)
-        
+            # [3] Update conversation with response
+            self.current_conversation.AddAssistantMessage(resp.content)
+
+            # Store History
+            self.StoreConversation(conv_id)
+        else:
+            error_msg = "... Imposter does not feel like responding at the current moment ... please try again later!"
+            resp = {"content": error_msg}
+
+        # [4] Include id in response payload
+        resp['id'] = conv_id
+
         return resp
 
     def UpdateSystemPrompt(self, conv_id, prompt_string):
@@ -101,6 +108,7 @@ class ChatManager:
         conversation_list = self.QuerySavedConversations()
         print("Conversation List:")
         print(conversation_list)
+        #TODO: should create this default conversation for every personality
         if conversation_list is None or conversation_list == []:
             self.conversation_history[TEST_PERSONALITY_ID] = Conversation(TEST_PERSONALITY_ID, TEST_PERSONALITY_NICKNAME, [], TEST_SYSTEM_PROMPT)
             print("No recorded conversations. Creating first one!", "First Conversation ID: ", TEST_PERSONALITY_ID)
