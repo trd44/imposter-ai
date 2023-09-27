@@ -36,21 +36,31 @@ class ChatManager:
         Send a message and make an API call
         """
 
-        # [1] Update the conversation via conversation id
+        # [1] Retrieve the conversation in question
         print(self.conversation_history)
-        print("Sending Message For Conversation ID: ", conv_id)
+        print("Sending message for conversation ID: ", conv_id)
+
+        # If conversation ID does not exist, create new conversation
+        if conv_id not in self.conversation_history.keys():
+            print("New conversation")
+            #TODO: New conversations might need to have a specific "first message" that is curated or stored somewhere...
+            #      Currently, there is no "first message" for a new conversation.
+            self.CreateConversation(conv_id)
+        
         self.current_conversation = self.conversation_history[conv_id]
-        print("Appending Message")
+
+        # [2] Update the conversation via conversation id
+        print("Appending message")
         self.current_conversation.AddUserMessage(message)
 
-        # [2] Send message
+        # [3] Send message
         # TODO: error handling on response
         resp = self.SendModelRequest(conv_id)
         if resp:
-            print("Response Received")
+            print("Response received")
             print(resp)
 
-            # [3] Update conversation with response
+            # [4] Update conversation with response
             self.current_conversation.AddAssistantMessage(resp.content)
 
             # Store History
