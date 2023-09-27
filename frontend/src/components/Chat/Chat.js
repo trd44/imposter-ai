@@ -70,33 +70,32 @@ const getImageUrl = (imageName) => {
 
   console.log('Chat component function is running');
 
-  useEffect(() => {
-    // Fetch contacts from the server and setContacts
-    // TODO: provide which personality id to get conversation for. Assume that conversation exists in backend even if not talked to before.
-    // Backend handles new covnersations [COMPLETED]
-
-    const fetchChatHistory = async () => {
-      console.log("trying to call api/fetch_chat_history");
-      try {
-        const response = await fetch('api/fetch_chat_history', {
-          method: 'POST',  // Changed from GET to POST
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: 0  // TODO: replace hardcoded id with dynamic ID
-          })
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const chatHistory = await response.json();
-        setChatHistory(chatHistory);
-      } catch (error) {
-        console.error('Failed to fetch chat history: ', error);
+  // Fetch contacts from the server and setContacts
+  // TODO: provide which personality id to get conversation for. Assume that conversation exists in backend even if not talked to before.
+  // Backend handles new covnersations [COMPLETED]
+  const fetchChatHistory = async () => {
+    console.log("trying to call api/fetch_chat_history");
+    try {
+      const response = await fetch('api/fetch_chat_history', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: activeContactId
+        })
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
+      const chatHistory = await response.json();
+      setChatHistory(chatHistory);
+    } catch (error) {
+      console.error('Failed to fetch chat history: ', error);
+    }
+  };
 
+  useEffect(() => {
     fetchChatHistory();
   }, []);
 
