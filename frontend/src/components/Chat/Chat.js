@@ -11,7 +11,6 @@ import './Chat.css';
 export default function Chat() {
   const [token, setToken] = useState();
   const [name, setName] = useState('');
-  const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [sendButtonEnabled, setSendButtonEnabled] = useState(true);
   const [activeContactId, setActiveContactId] = useState(0);
@@ -23,14 +22,6 @@ const getImageUrl = (imageName) => {
     return `/backend_assets/${imageName}`
   }
 
-  //TODO: mMake a function like fetchChatHistory where it requests all the personalities from the database and adds them
-  //currently when we access contacts, we just index at zero it seems.
-  //const [contacts, setContacts] = useState([
-  //  { id: 0, name: 'Travel Agent', image: getImageUrl('TestContact.jpeg'), lastMessage: 'Hey there!' }, // Test Data
-  //  // { id: 2, name: 'Jane Smith', image: myImage, lastMessage: 'See you tomorrow' },
-  //]);
-
-  //
   const [contacts, setContacts] = useState([]);
   
   // Function to fetch contacts (personalities) from the database
@@ -164,9 +155,9 @@ const getImageUrl = (imageName) => {
     setIsTyping(false);
     setSendButtonEnabled(true);
 
-    // TODO: Verify that response id matches the request ID, e.g. data.id == id
-    // 1) Only update chat history if id's match (this will impact what is displayed...)
-    // 2) Only display response if id's match (1 should accomplish 2)
+    // Verify that response id matches the request ID, e.g. data.id == id
+    // IFF response id matches active ID, update chat history (which will impact what is displayed to user)
+    // ELSE: display nothing new
     if (data.id === activeContactId) {
       setChatHistory(prevChatHistory => [
         ...prevChatHistory,
@@ -177,7 +168,8 @@ const getImageUrl = (imageName) => {
 
       ]);
     }
-    setNewMessage('');
+
+    // NOTE: Will not clear text box when receive response.
   }
 
   return (
