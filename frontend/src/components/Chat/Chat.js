@@ -99,23 +99,21 @@ const getImageUrl = (imageName) => {
     fetchChatHistory();
   }, []);
 
-
-  //TODO: This is where the user clicks the contact. does not swap anything. Would have to update this function
-  //Would have to fetch chat history and provide the correct chat ID
-  // [1] update the message history that is displayed (would recall 'fetchChatHistory)
-  // [2] update some state so when new message is sent, we get correct response
-  // [3] should block changing contacts until we get response from last message? (another ticket)
-  // dont want wrong personality to have response displayed
-  // maybe when get response, and not on correct ID, dont display it. 
+  // Select contact to have conversation with
   const handleContactClick = (contactId) => {
-    // TODO: Handle when a contact is clicked
+
+    // [1] Update active contact ID
     console.log(`Contact clicked: ${contactId}`);
     setActiveContactId(contactId);
-    // Fetch chat history for the clicked contact and setChatHistory
-    // Just like fetchChatHistory but with the provided contactId
+
+    // [2] Retrieve and display chat history for selected contact
+    fetchChatHistory();
+
+    // [3] Transition UI for chatting with contact
     setMenuOpen(false); // Close the contacts menu
   };
 
+  // Send message to backend and get response. Async, so user can continue to use UI
   const sendMessage = async (newMessage, activeContactId) => {
 
     // Ensure newMessage is not an empty string
