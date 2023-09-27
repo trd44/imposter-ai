@@ -1,9 +1,10 @@
 import functools
 import jwt
 import datetime
+import os
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for, jsonify
+    Blueprint, current_app, flash, g, redirect, render_template, request, session, url_for, jsonify
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -12,18 +13,29 @@ from backend.db import get_db
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 def create_token(user_id):
-    payload = {
-        'user_id': user_id,  # User ID to be stored in the token
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=5),  # Expiration time
-        'iat': datetime.datetime.utcnow()  # Issued at time
-    }
+    token_expiry = datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=5)
 
-    token = jwt.encode(payload, 'your-secret-key', algorithm='HS256')  # Secret key should be kept safe
-    return token
+    token = jwt.encode({
+        'user_id': user_id,
+        'exp': token_expiry,
+        'iat': datetime.datetime.utcnow()
+    }, current_app.config['JWT_SECRET_KEY'], algorithm='HS256')
+
+    return jsonify({'token': token, 'token_expiry': token_expiry.timestamp()}), 200
+
+
+    # payload = {
+    #     'user_id': user_id,  # User ID to be stored in the token
+    #     'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=5),  # Expiration time
+    #     'iat': datetime.datetime.utcnow()  # Issued at time
+    # }
+
+    # token = jwt.encode(payload, current_app.config['JWT_SECRET_KEY'], algorithm='HS256')  # Secret key should be kept safe
+    # return token
 
 def decode_token(token):
     try:
-        payload = jwt.decode(token, 'your-secret-key', algorithms=['HS256'])
+        payload = jwt.decode(token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
         return payload['user_id']  # Return user ID or any information you stored in the token
     except jwt.ExpiredSignatureError:
         return None  # Signature has expired
