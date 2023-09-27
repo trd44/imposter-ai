@@ -16,6 +16,19 @@ class DatabaseManager:
     # class should be static?
     #TODO: Move functionality from db.py to DatabaseManager
 
+    def GetAllPersonalities():
+        """
+        Returns a list of tuples where each tuple contains all personality information,
+        (personality_id, nickname, image)
+        Will return None if empty
+        """
+        db = get_db()
+        personality_list = db.execute('''
+            SELECT id, nickname, img
+            FROM personality
+            ''').fetchall()
+        return personality_list
+
     def GetChatList(user_id: int):
         """
         Returns a list of tuples where each tuple contains,
