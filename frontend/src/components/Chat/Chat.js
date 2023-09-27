@@ -17,17 +17,64 @@ export default function Chat() {
   const [activeContactId, setActiveContactId] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const getImageUrl = (imageName) => {
+// Retreive an image from URL
+const getImageUrl = (imageName) => {
     console.log('Fetching Image: ', imageName);
     return `/backend_assets/${imageName}`
   }
 
   //TODO: mMake a function like fetchChatHistory where it requests all the personalities from the database and adds them
   //currently when we access contacts, we just index at zero it seems.
-  const [contacts, setContacts] = useState([
-    { id: 0, name: 'Travel Agent', image: getImageUrl('TestContact.jpeg'), lastMessage: 'Hey there!' }, // Test Data
-    // { id: 2, name: 'Jane Smith', image: myImage, lastMessage: 'See you tomorrow' },
-  ]);
+  //const [contacts, setContacts] = useState([
+  //  { id: 0, name: 'Travel Agent', image: getImageUrl('TestContact.jpeg'), lastMessage: 'Hey there!' }, // Test Data
+  //  // { id: 2, name: 'Jane Smith', image: myImage, lastMessage: 'See you tomorrow' },
+  //]);
+
+  //
+  const [contacts, setContacts] = useState([]);
+  
+  // Function to fetch contacts (personalities) from the database
+  const fetchContacts = async () => {
+    try {
+      // Retrieve array of personalities for current user
+      console.log("trying to call backend/fetch_contacts");
+
+      const response = await fetch('backend/fetch_contacts', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      
+      // Map through the data (array of contacts) to create the contact objects
+      const fetchedContacts = data.map(contact => ({
+        id: contact.id,
+        name: contact.nickname,
+        image: getImageUrl(contact.img),
+        lastMessage: 'Hey there!', // TODO: replace with actual message data if availabe
+      }));
+  
+      // Use setContacts to update the state
+      setContacts(fetchedContacts);
+      
+    } catch (error) {
+      console.error(`Failed to fetch contacts: ${error}`);
+    }
+  };
+  
+  // Call fetchContacts once when the component is mounted
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+  
+
   const [chatHistory, setChatHistory] = useState([]);
 
   console.log('Chat component function is running');

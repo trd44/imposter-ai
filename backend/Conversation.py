@@ -3,7 +3,7 @@
 ''' Stores the messages in a conversation as well as the system prompt message '''
 class Conversation:
 
-    def __init__(self, id = 0, name = "bot", message_log = [], system_prompt_list = []):
+    def __init__(self, id = 0, name = "bot", message_log = [], system_prompt_list = [], img = ''):
         """ 
         Initializes a conversation
 
@@ -18,6 +18,7 @@ class Conversation:
         self.name = name
         self.message_log = message_log
         self.system_prompt_list = system_prompt_list
+        self.img = img
 
     def ExportSavedMessages(self):
         """
@@ -28,7 +29,7 @@ class Conversation:
         if self.system_prompt_list:
             sys_prompt = {"role" : "system", "content": ""}
             for prompt in self.system_prompt_list:
-                if sys_prompt["content"] is not "":
+                if sys_prompt["content"] != "":
                     sys_prompt["content"] = sys_prompt["content"] + " "
                 sys_prompt["content"] = sys_prompt["content"] + prompt + "."
         
@@ -62,3 +63,6 @@ class Conversation:
     
     def GetPersonalityName(self):
         return self.name
+
+    def GetImg(self):
+        return self.img
