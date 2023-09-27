@@ -26,7 +26,7 @@ const getImageUrl = (imageName) => {
   //TODO: mMake a function like fetchChatHistory where it requests all the personalities from the database and adds them
   //currently when we access contacts, we just index at zero it seems.
   //const [contacts, setContacts] = useState([
-  //  { id: 1, name: 'Travel Agent', image: getImageUrl('TestContact.jpeg'), lastMessage: 'Hey there!' }, // Test Data
+  //  { id: 0, name: 'Travel Agent', image: getImageUrl('TestContact.jpeg'), lastMessage: 'Hey there!' }, // Test Data
   //  // { id: 2, name: 'Jane Smith', image: myImage, lastMessage: 'See you tomorrow' },
   //]);
 
