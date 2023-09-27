@@ -67,6 +67,14 @@ def backend_assets(path):
     return send_from_directory('backend/static/assets', path)
 #endregion
 
+#region
+@app.route('/backend/fetch_contacts', methods=['GET'])
+@login_required
+def fetch_contacts():
+
+    return None
+#endregion
+
 
 #region ChatMessaging
 
