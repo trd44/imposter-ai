@@ -18,7 +18,7 @@ class DatabaseManager:
 
     def GetAllPersonalities():
         """
-        Returns a list of tuples where each tuple contains all personality information,
+        Returns a list of tuples where each tuple contains the following personality information,
         (personality_id, nickname, image)
         Will return None if empty
         """
