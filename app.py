@@ -14,7 +14,8 @@ from backend.HelloApiHandler import HelloApiHandler
 from backend.ChatManager import ChatManager
 from backend.GPTModel import GPTModel
 from backend.auth import login_required
-from backend.DatabaseManager import DatabaseManager
+from backend.DatabaseManager import DatabaseManager as dbm
+from backend.Utils import SerializeJson
 #endregion
 
 #region Data Imports
@@ -71,8 +72,18 @@ def backend_assets(path):
 @app.route('/backend/fetch_contacts', methods=['GET'])
 @login_required
 def fetch_contacts():
+    # TODO: unless personality table does not exist, should handle case where db request returns None
 
-    return None
+    # [1] Retrieve personality list from database
+    personality_list = dbm.GetAllPersonalities()
+
+    # [2] Convert list of tuples into list of dictionaries
+    personality_list_dict_format = [dict(zip(['id', 'nickname', 'img'], tpl)) for tpl in personality_list]
+
+    # [3] Convert list of dictionaries into JSON format
+    personality_list_json_format = SerializeJson(personality_list_dict_format)
+
+    return personality_list_json_format
 #endregion
 
 
