@@ -88,7 +88,9 @@ const getImageUrl = (imageName) => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      console.log("retrieving new history for the contact: ", activeContactId)
       const chatHistory = await response.json();
+      console.log("updating chat history given response!")
       setChatHistory(chatHistory);
     } catch (error) {
       console.error('Failed to fetch chat history: ', error);
@@ -97,7 +99,7 @@ const getImageUrl = (imageName) => {
 
   useEffect(() => {
     fetchChatHistory();
-  }, []);
+  }, [activeContactId]);
 
   // Select contact to have conversation with
   const handleContactClick = (contactId) => {
@@ -105,9 +107,8 @@ const getImageUrl = (imageName) => {
     // [1] Update active contact ID
     console.log(`Contact clicked: ${contactId}`);
     setActiveContactId(contactId);
-
-    // [2] Retrieve and display chat history for selected contact
-    fetchChatHistory();
+    console.log('Updated Contact: ', activeContactId)
+    // [2] Retrieve and display chat history for selected contact (will happen automatically)
 
     // [3] Transition UI for chatting with contact
     setMenuOpen(false); // Close the contacts menu
