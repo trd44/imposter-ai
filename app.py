@@ -100,9 +100,7 @@ def send_user_message():
     # Startup chat manager
     chat_manager = ChatManager(g.user['id'], None, GPTModel())
 
-    # Send message
-    # TODO: update for being able to select personality (request body needs to contain personality ID)
-    # potentially: data['id'] [COMPLETED]
+    # Send message to provided personality
     response = chat_manager.SendMessage(data['activeContactId'], data['newMessage'])
 
     # Return ChatGPT's response

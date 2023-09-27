@@ -24,7 +24,10 @@ function InputSection({ sendMessage, disabled }) {
     if(!message.trim()) { // check if message is not empty or only contains whitespace
       return;
     }
+    // Send message to backend
     sendMessage(message);
+
+    // Clear text box for next question
     setMessage('');
   };
 
