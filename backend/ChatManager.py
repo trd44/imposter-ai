@@ -123,16 +123,40 @@ class ChatManager:
         
     def RetrieveConversation(self, conv_id):
         """
-        Updates conversation with the stored conversation from the database
+        Updates conversation history with the stored conversation from the database given conversation id.
+
+        Args:
+            conv_id : Conversation id
+
+        Returns:
+            conversation object for current id
         """
-        # TODO: error checking
-        print("RETRIEVING CONVERSATION")
+        print(f"RETRIEVING CONVERSATION for ID: {conv_id}")
         messages = dbm.GetChatFromID(self.user_id, conv_id)
-        print("Retreived Messages")
-        print(messages)
+        if messages:
+            print("Retreived messages:")
+            print(messages)
+        else:
+            messages = []
+            print(f"No record of conversation with ID: {conv_id} exists!")
+            print(f"Creating new conversation!")
+
+        return self.CreateConversation(conv_id, messages)
+    
+    def CreateConversation(self, conv_id, messages = []):
+        """
+        Creates a new conversation object and assigns it to the conv_id key in conversation_history dict
+
+        Args:
+            conv_id : Conversation id/personality id
+            messages: Array of messages related to conversation. If new conversation leave empty.
+        """
+        # TODO: error checking (1) if conv_id does not exist
+        # [1] Get personality information from database
         name, system_prompt, img = dbm.GetSystemPromptFromID(conv_id)
-        print("Retreived System Prompt For, ", name)
+        print("Retreived system prompt for, ", name)
         print(system_prompt)
-        #name, system_prompt = "travelassist", ["respond as if you are a travel assistant", "pretend to be vin deisel when responding"]
+
+        # [2] create new conversation in history with personality and message information
         self.conversation_history[conv_id] = Conversation(conv_id, name, messages, system_prompt, img)
         return self.conversation_history[conv_id]
