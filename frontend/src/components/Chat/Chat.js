@@ -14,12 +14,14 @@ export default function Chat() {
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [sendButtonEnabled, setSendButtonEnabled] = useState(true);
+  const [activeContactId, setActiveContactId] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
 
 // Retreive an image from URL
 const getImageUrl = (imageName) => {
     console.log('Fetching Image: ', imageName);
     return `/backend_assets/${imageName}`
-}
+  }
 
   //TODO: mMake a function like fetchChatHistory where it requests all the personalities from the database and adds them
   //currently when we access contacts, we just index at zero it seems.
@@ -121,9 +123,13 @@ const getImageUrl = (imageName) => {
   const handleContactClick = (contactId) => {
     // TODO: Handle when a contact is clicked
     console.log(`Contact clicked: ${contactId}`);
+    setActiveContactId(contactId);
+    // Fetch chat history for the clicked contact and setChatHistory
+    // Just like fetchChatHistory but with the provided contactId
+    setMenuOpen(false); // Close the contacts menu
   };
 
-  const sendMessage = async (newMessage, id) => {
+  const sendMessage = async (newMessage, activeContactId) => {
 
     // Ensure newMessage is not an empty string
     if (!newMessage.trim()) return;
@@ -153,7 +159,7 @@ const getImageUrl = (imageName) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ newMessage, id }), // Include the newMessage and ID in the body sent to the server
+      body: JSON.stringify({ newMessage, activeContactId }), // Include the newMessage and ID in the body sent to the server
     });
 
     const data = await response.json();
@@ -164,38 +170,47 @@ const getImageUrl = (imageName) => {
     // TODO: Verify that response id matches the request ID, e.g. data.id == id
     // 1) Only update chat history if id's match (this will impact what is displayed...)
     // 2) Only display response if id's match (1 should accomplish 2)
+    if (data.id === activeContactId) {
+      setChatHistory(prevChatHistory => [
+        ...prevChatHistory,
+        {
+          role: "assistant",
+          content: data.content,
+        },
 
-    setChatHistory(prevChatHistory => [
-      ...prevChatHistory,
-      {
-        role: "assistant",
-        content: data.content,
-      },
-
-    ]);
+      ]);
+    }
     setNewMessage('');
   }
 
   return (
     <div className='chat-container'>
-      <div className="contacts-section">
-        <h2>Contacts</h2>
-        <ContactList contacts={contacts} onContactClick={handleContactClick} />
+      <div className="hamburger">
+        <button onClick={() => setMenuOpen(!menuOpen)}>
+          Contacts List
+        </button>
       </div>
-      <div className="chat-wrapper">
-        <h2>Travel Agent Imposter</h2>
-        Start by saying Hello!
-        <div className="messages-section">
-          <MessagesSection chatHistory={chatHistory} />
-          {isTyping && <div className="message-bubble message-assistant">
-            <p className="typing-text">Imposter is typing</p>
-          </div>}
-
-
+      <div className={`main-content ${menuOpen ? 'menu-open' : ''}`}>
+        <div className={`contacts-section ${menuOpen ? 'open' : ''}`}>
+          {/* <h2>Contacts</h2> */}
+          <ContactList contacts={contacts} onContactClick={handleContactClick} />
         </div>
-        {/* The '0' is a placeholder for the message id
+
+        <div className="chat-wrapper">
+          <h2>{contacts.find(contact => contact.id === activeContactId)?.name || "Unknown"}</h2>
+          Start by saying Hello!
+          <div className="messages-section">
+            <MessagesSection chatHistory={chatHistory} />
+            {isTyping && <div className="message-bubble message-assistant">
+              <p className="typing-text">Imposter is typing</p>
+            </div>}
+
+
+          </div>
+          {/* The '0' is a placeholder for the message id
         TODO: replace the hardcoded ID with a state variable tracking ID */}
-        <InputSection disabled={!sendButtonEnabled} sendMessage={(message) => sendMessage(message, 0)} />
+          <InputSection disabled={!sendButtonEnabled} sendMessage={(message) => sendMessage(message, activeContactId)} />
+        </div>
       </div>
     </div>
   );
