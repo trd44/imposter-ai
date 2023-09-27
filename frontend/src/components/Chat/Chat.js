@@ -45,9 +45,6 @@ const getImageUrl = (imageName) => {
           'Content-Type': 'application/json',
           
         },
-        body: JSON.stringify({
-          id: 0  // TODO: replace hardcoded id with dynamic ID
-        })
       });
   
       if (!response.ok) {
