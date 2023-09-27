@@ -36,7 +36,7 @@ const getImageUrl = (imageName) => {
   // Function to fetch contacts (personalities) from the database
   const fetchContacts = async () => {
     try {
-      // TODO: Replace this with actual API call or database query
+      // Retrieve array of personalities for current user
       console.log("trying to call backend/fetch_contacts");
 
       const response = await fetch('backend/fetch_contacts', {
@@ -56,12 +56,12 @@ const getImageUrl = (imageName) => {
   
       const data = await response.json();
       
-      // Map through the data to create the contact objects
+      // Map through the data (array of contacts) to create the contact objects
       const fetchedContacts = data.map(contact => ({
         id: contact.id,
         name: contact.nickname,
         image: getImageUrl(contact.img),
-        lastMessage: 'Hey there!', // replace with actual message data if availabe
+        lastMessage: 'Hey there!', // TODO: replace with actual message data if availabe
       }));
   
       // Use setContacts to update the state
