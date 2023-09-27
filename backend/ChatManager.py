@@ -59,29 +59,48 @@ class ChatManager:
             error_msg = "... Imposter does not feel like responding at the current moment ... please try again later!"
             resp = {"content": error_msg}
 
-        # [4] Include id in response payload
+        # [5] Include id in response payload
         resp['id'] = conv_id
 
         return resp
 
     def UpdateSystemPrompt(self, conv_id, prompt_string):
         """
-        Presumes there is only a single prompt
+        Updates the system pompt for a specified conversation/personality ID.
+        Presumes there is only a single prompt.
 
-        Simply updates system prompt
+        Args:
+            conv_id : Conversation/personality id
+            prompt_string : System prompt
         """
-        self.current_conversation = self.current_conversation[conv_id]
-        self.current_conversation.AddSystemMessage(prompt_string)
+        #TODO: error handling (1) if conversation does not exist
+        if conv_id in self.conversation_history:
+            self.current_conversation = self.current_conversation[conv_id]
+            try:
+                self.current_conversation.AddSystemMessage(prompt_string)
+            except Exception as e:
+                print(f"Object stored at current_conversation[{conv_id}] is not a valid Conversation object!\n Error: ", e)
+        else:
+            print(f"Conversation does not exist, cannot update prompt for ID: {conv_id}!")
 
     def SendModelRequest(self, conv_id):
         """
-        Makes a model request given the current conversation state
+        Makes a model request given the current conversation state.
+
+        Args:
+            conv_id : Conversation id
+
+        Return:
+            Model restful API response json.
         """
         return self.model.MakeRequest(self.conversation_history[conv_id].ExportSavedMessages())
 
     def StoreConversation(self, conv_id):
         """
-        Stores the current state of the conversation in the database
+        Stores the current state of the conversation in the database.
+
+        Args:
+            conv_id : Conversation id
         """
         # retreive messages from conversation
         messages = self.conversation_history[conv_id].GetMessages()
