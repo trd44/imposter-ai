@@ -5,7 +5,7 @@ from backend.DatabaseManager import DatabaseManager as dbm
 #endregion
 
 #region Test Data Imports
-from Presets.PresetData import TEST_PERSONALITY_NICKNAME, TEST_PERSONALITY_ID, TEST_SYSTEM_PROMPT
+from Presets.PresetData import TEST_PERSONALITY_NICKNAME, TEST_PERSONALITY_ID, TEST_SYSTEM_PROMPT, TEST_PERSONALITY_IMG
 #endregion
 
 class ChatManager:
@@ -90,7 +90,10 @@ class ChatManager:
         # TODO: handle when to save personality...for now always do
         name = self.conversation_history[conv_id].GetPersonalityName()
         system_prompt = self.conversation_history[conv_id].GetSystemPrompt()
-        dbm.SavePersonality(conv_id, name, system_prompt)
+        img = self.conversation_history[conv_id].GetImg()
+        ## TODO: Do not save personality each time???
+        ## TODO: Address not overwriting the test contact image each time...where to update personality...
+        dbm.SavePersonality(conv_id, name, system_prompt, img)
 
     def QuerySavedConversations(self):
         """
@@ -108,9 +111,10 @@ class ChatManager:
         conversation_list = self.QuerySavedConversations()
         print("Conversation List:")
         print(conversation_list)
+        #TODO: currently, we save all personality info in the conversation object, maybe we dont want to do that...
         #TODO: should create this default conversation for every personality
         if conversation_list is None or conversation_list == []:
-            self.conversation_history[TEST_PERSONALITY_ID] = Conversation(TEST_PERSONALITY_ID, TEST_PERSONALITY_NICKNAME, [], TEST_SYSTEM_PROMPT)
+            self.conversation_history[TEST_PERSONALITY_ID] = Conversation(TEST_PERSONALITY_ID, TEST_PERSONALITY_NICKNAME, [], TEST_SYSTEM_PROMPT, TEST_PERSONALITY_IMG)
             print("No recorded conversations. Creating first one!", "First Conversation ID: ", TEST_PERSONALITY_ID)
         else:
             for conv_id, _ in conversation_list:
@@ -126,9 +130,9 @@ class ChatManager:
         messages = dbm.GetChatFromID(self.user_id, conv_id)
         print("Retreived Messages")
         print(messages)
-        name, system_prompt = dbm.GetSystemPromptFromID(conv_id)
+        name, system_prompt, img = dbm.GetSystemPromptFromID(conv_id)
         print("Retreived System Prompt For, ", name)
         print(system_prompt)
         #name, system_prompt = "travelassist", ["respond as if you are a travel assistant", "pretend to be vin deisel when responding"]
-        self.conversation_history[conv_id] = Conversation(conv_id, name, messages, system_prompt)
+        self.conversation_history[conv_id] = Conversation(conv_id, name, messages, system_prompt, img)
         return self.conversation_history[conv_id]
