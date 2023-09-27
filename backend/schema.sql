@@ -31,5 +31,6 @@ CREATE TABLE chat (
 CREATE TABLE personality (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   nickname TEXT NOT NULL,
-  system_prompt TEXT
+  system_prompt TEXT,
+  img TEXT NOT NULL
 );
