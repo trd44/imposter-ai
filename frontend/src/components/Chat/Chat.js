@@ -11,7 +11,6 @@ import './Chat.css';
 export default function Chat() {
   const [token, setToken] = useState();
   const [name, setName] = useState('');
-  const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [sendButtonEnabled, setSendButtonEnabled] = useState(true);
   const [activeContactId, setActiveContactId] = useState(0);
@@ -23,14 +22,6 @@ const getImageUrl = (imageName) => {
     return `/backend_assets/${imageName}`
   }
 
-  //TODO: mMake a function like fetchChatHistory where it requests all the personalities from the database and adds them
-  //currently when we access contacts, we just index at zero it seems.
-  //const [contacts, setContacts] = useState([
-  //  { id: 0, name: 'Travel Agent', image: getImageUrl('TestContact.jpeg'), lastMessage: 'Hey there!' }, // Test Data
-  //  // { id: 2, name: 'Jane Smith', image: myImage, lastMessage: 'See you tomorrow' },
-  //]);
-
-  //
   const [contacts, setContacts] = useState([]);
   
   // Function to fetch contacts (personalities) from the database
@@ -79,6 +70,7 @@ const getImageUrl = (imageName) => {
 
   console.log('Chat component function is running');
 
+
   useEffect(() => {
     // Fetch contacts from the server and setContacts
     // TODO: provide which personality id to get conversation for. Assume that conversation exists in backend even if not talked to before.
@@ -95,7 +87,7 @@ const getImageUrl = (imageName) => {
             'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
-            id: 0  // TODO: replace hardcoded id with dynamic ID
+            id: activeContactId
           })
         });
         if (!response.ok) {
@@ -106,28 +98,32 @@ const getImageUrl = (imageName) => {
       } catch (error) {
         console.error('Failed to fetch chat history: ', error);
       }
-    };
+      const chatHistory = await response.json();
+      setChatHistory(chatHistory);
+    } catch (error) {
+      console.error('Failed to fetch chat history: ', error);
+    }
+  };
 
+  useEffect(() => {
     fetchChatHistory();
   }, []);
 
-
-  //TODO: This is where the user clicks the contact. does not swap anything. Would have to update this function
-  //Would have to fetch chat history and provide the correct chat ID
-  // [1] update the message history that is displayed (would recall 'fetchChatHistory)
-  // [2] update some state so when new message is sent, we get correct response
-  // [3] should block changing contacts until we get response from last message? (another ticket)
-  // dont want wrong personality to have response displayed
-  // maybe when get response, and not on correct ID, dont display it. 
+  // Select contact to have conversation with
   const handleContactClick = (contactId) => {
-    // TODO: Handle when a contact is clicked
+
+    // [1] Update active contact ID
     console.log(`Contact clicked: ${contactId}`);
     setActiveContactId(contactId);
-    // Fetch chat history for the clicked contact and setChatHistory
-    // Just like fetchChatHistory but with the provided contactId
+
+    // [2] Retrieve and display chat history for selected contact
+    fetchChatHistory();
+
+    // [3] Transition UI for chatting with contact
     setMenuOpen(false); // Close the contacts menu
   };
 
+  // Send message to backend and get response. Async, so user can continue to use UI
   const sendMessage = async (newMessage, activeContactId) => {
 
     // Ensure newMessage is not an empty string
@@ -168,9 +164,9 @@ const getImageUrl = (imageName) => {
     setIsTyping(false);
     setSendButtonEnabled(true);
 
-    // TODO: Verify that response id matches the request ID, e.g. data.id == id
-    // 1) Only update chat history if id's match (this will impact what is displayed...)
-    // 2) Only display response if id's match (1 should accomplish 2)
+    // Verify that response id matches the request ID, e.g. data.id == id
+    // IFF response id matches active ID, update chat history (which will impact what is displayed to user)
+    // ELSE: display nothing new
     if (data.id === activeContactId) {
       setChatHistory(prevChatHistory => [
         ...prevChatHistory,
@@ -181,7 +177,8 @@ const getImageUrl = (imageName) => {
 
       ]);
     }
-    setNewMessage('');
+
+    // NOTE: Will not clear text box when receive response.
   }
 
   return (
