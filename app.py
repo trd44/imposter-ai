@@ -1,4 +1,3 @@
-
 #region General/API Imports
 import os
 import datetime
@@ -24,16 +23,6 @@ from Presets.PresetData import TEST_PERSONALITY_ID
 #endregion
 
 #region Application Start
-
-# Initialize Flask app and CORS, set up API and secret key
-# app = Flask(__name__, static_folder='frontend/build', static_url_path='')
-# # CORS(app)
-# api = Api(app)
-# app.config.from_mapping(
-#     SECRET_KEY='dev',
-#     DATABASE=os.path.join(app.instance_path, 'imposter.sqlite'),
-# )
-
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
 api = Api(app)
 app.config.from_object(Config)
