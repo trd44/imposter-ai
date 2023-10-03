@@ -1,4 +1,3 @@
-
 #region General/API Imports
 import os
 import datetime
@@ -9,6 +8,7 @@ import openai
 #endregion
 
 #region Backend Imports
+from backend.config import Config
 import backend.callbacks as cb
 from backend.HelloApiHandler import HelloApiHandler
 from backend.ChatManager import ChatManager
@@ -23,15 +23,9 @@ from Presets.PresetData import TEST_PERSONALITY_ID
 #endregion
 
 #region Application Start
-
-# Initialize Flask app and CORS, set up API and secret key
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
-# CORS(app)
 api = Api(app)
-app.config.from_mapping(
-    SECRET_KEY='dev',
-    DATABASE=os.path.join(app.instance_path, 'imposter.sqlite'),
-)
+app.config.from_object(Config)
 
 
 # Ensure the instance folder exists

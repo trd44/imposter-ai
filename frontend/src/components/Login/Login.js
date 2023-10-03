@@ -17,8 +17,16 @@ async function loginUser(credentials) {
     body: JSON.stringify(credentials)
   })
 
-  const data = await response.json();
-  return { response, data };
+  if (response.headers.get("content-type")?.includes("application/json")) {
+    const data = await response.json();
+    return { response, data };
+  } else {
+    const text = await response.text();
+    throw new Error(`Expected a JSON response, but got: ${text}`);
+  }
+
+  // const data = await response.json();
+  // return { response, data };
 }
 
 
@@ -50,9 +58,9 @@ export default function Login({ onSuccessfulLogin }) {
         return;
       }
 
-      const { token } = data;
+      const { token, token_expiry } = data;
 
-      onSuccessfulLogin(token, username);
+      onSuccessfulLogin(token, token_expiry, username);
       navigate("/chat");
     } catch (err) {
       console.error("An error occurred while logging in", err);
