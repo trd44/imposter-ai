@@ -70,35 +70,28 @@ const getImageUrl = (imageName) => {
 
   console.log('Chat component function is running');
 
-
-  useEffect(() => {
-    // Fetch contacts from the server and setContacts
-    // TODO: provide which personality id to get conversation for. Assume that conversation exists in backend even if not talked to before.
-    // Backend handles new covnersations [COMPLETED]
-
-    const fetchChatHistory = async () => {
-      console.log("trying to call api/fetch_chat_history");
-      const token = localStorage.getItem('token');
-      try {
-        const response = await fetch('api/fetch_chat_history', {
-          method: 'POST',  // Changed from GET to POST
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            id: activeContactId
-          })
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const chatHistory = await response.json();
-        setChatHistory(chatHistory);
-      } catch (error) {
-        console.error('Failed to fetch chat history: ', error);
+  // Fetch contacts from the server and setContacts
+  // TODO: provide which personality id to get conversation for. Assume that conversation exists in backend even if not talked to before.
+  // Backend handles new covnersations [COMPLETED]
+  const fetchChatHistory = async () => {
+    console.log("trying to call api/fetch_chat_history");
+    try {
+      const response = await fetch('api/fetch_chat_history', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          id: activeContactId
+        })
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+      console.log("retrieving new history for the contact: ", activeContactId)
       const chatHistory = await response.json();
+      console.log("updating chat history given response!")
       setChatHistory(chatHistory);
     } catch (error) {
       console.error('Failed to fetch chat history: ', error);
@@ -107,7 +100,7 @@ const getImageUrl = (imageName) => {
 
   useEffect(() => {
     fetchChatHistory();
-  }, []);
+  }, [activeContactId]);
 
   // Select contact to have conversation with
   const handleContactClick = (contactId) => {
@@ -115,9 +108,8 @@ const getImageUrl = (imageName) => {
     // [1] Update active contact ID
     console.log(`Contact clicked: ${contactId}`);
     setActiveContactId(contactId);
-
-    // [2] Retrieve and display chat history for selected contact
-    fetchChatHistory();
+    console.log('Updated Contact: ', activeContactId)
+    // [2] Retrieve and display chat history for selected contact (will happen automatically)
 
     // [3] Transition UI for chatting with contact
     setMenuOpen(false); // Close the contacts menu
