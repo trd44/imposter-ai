@@ -29,12 +29,12 @@ const getImageUrl = (imageName) => {
     try {
       // Retrieve array of personalities for current user
       console.log("trying to call backend/fetch_contacts");
-
+      const token = localStorage.getItem('token');
       const response = await fetch('backend/fetch_contacts', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          
+          'Authorization': `Bearer ${token}`
         },
       });
   
@@ -80,6 +80,7 @@ const getImageUrl = (imageName) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           id: activeContactId
@@ -140,10 +141,12 @@ const getImageUrl = (imageName) => {
     //    * The fetch request below is a POST request to "/api/send_user_message"
     //    * The data sent is 'newMessage' which is assigned the value of whatever
     //    * the user has entered into the chat input field.
+    const token = localStorage.getItem('token');
     const response = await fetch('api/send_user_message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ newMessage, activeContactId }), // Include the newMessage and ID in the body sent to the server
     });

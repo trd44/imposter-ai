@@ -31,7 +31,7 @@ const App = () => {
   //   link.type = 'image/x-icon';
   //   link.rel = 'shortcut icon';
   //   link.href = '%PUBLIC_URL%/favicon.ico';
-    
+
   //   document.getElementsByTagName('head')[0].appendChild(link);
   // }, []);
 
@@ -39,20 +39,29 @@ const App = () => {
   useEffect(() => {
     // Check if a user token is stored in local storage
     const storedToken = localStorage.getItem('token');
+    const storedTokenExpiry = localStorage.getItem('tokenExpiry');
 
-    // If a stored token exists, set it as the current token state
-    if (storedToken) {
+    // If the stored token exists and it hasn't expired, set it as the current token state
+    if (storedToken && new Date().getTime() < storedTokenExpiry) {
       setToken(storedToken);
+    } else {
+      // If the token is expired, clear it from local storage
+      localStorage.removeItem('token');
+      localStorage.removeItem('tokenExpiry');
+      localStorage.removeItem('username');
     }
+
     setLoading(false); // Set loading to false after checking for token
   }, []); // This effect runs once on mount and not on updates  
 
   if (loading) {
     return <div>Loading...</div>; // Replace with your actual loading component or spinner
   }
-  const handleSuccessfulLogin = (token, username) => {
+
+  const handleSuccessfulLogin = (token, tokenExpiry, username) => {
     setToken(token);
     localStorage.setItem('token', token);
+    localStorage.setItem('tokenExpiry', tokenExpiry);
     setUsername(username);
     localStorage.setItem('username', username);
   }
@@ -67,7 +76,7 @@ const App = () => {
         {/* If user is authenticated, show chat route in addition to home */}
         {!token ? (
           <Routes>
-            <Route path="/" element={<Home token={token}/>} />
+            <Route path="/" element={<Home token={token} />} />
             <Route path="/login" element={<Login onSuccessfulLogin={handleSuccessfulLogin} />} />
             <Route path="/register" element={<Register setToken={setToken} setUsername={setUsername} />} />
             {/* If any other path is visited, redirect to home */}
@@ -75,7 +84,7 @@ const App = () => {
           </Routes>
         ) : (
           <Routes>
-            <Route path="/" element={<Home token={token}/>} />
+            <Route path="/" element={<Home token={token} />} />
             <Route path="/chat" element={<Chat />} />
             {/* If any other path is visited, redirect to home */}
             <Route path="*" element={<Navigate to="/" />} />

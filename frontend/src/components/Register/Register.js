@@ -47,9 +47,10 @@ export default function Register({ setToken, setUsername }) {
         return;
       }
 
-      const { token } = data;
+      const { token, token_expiry } = data;
       setToken(token);
       localStorage.setItem('token', token);
+      localStorage.setItem('tokenExpiry', token_expiry);
       setUsername(username)
       localStorage.setItem('username', username);
       navigate("/chat")
