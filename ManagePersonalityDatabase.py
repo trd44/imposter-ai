@@ -16,9 +16,9 @@ def CreateNewPersonalityFromJSON(json_filename):
 
     # Insert data from the JSON file into the database
     cursor.execute("""
-        INSERT INTO personalities (NAME, SYSTEM_PROMPT, IMAGE_PATH)
-        VALUES (?, ?, ?)
-    """, (data['name'], data['system_prompt'], data['image_path']))
+        INSERT INTO personalities (NAME, SYSTEM_PROMPT, INTRO_MESSAGE, IMAGE_PATH)
+        VALUES (?, ?, ?, ?)
+    """, (data['name'], data['system_prompt'], data['intro_message'], data['image_path']))
 
     # Commit changes and close the connection
     conn.commit()
@@ -40,6 +40,32 @@ def delete_personality(personality_id):
 
     print(f"Record with ID {personality_id} deleted successfully!")
 
+def update_personality(personality_id, json_filename):
+    """Update the personality by its ID."""
+
+    with open(json_filename, 'r') as file:
+        data = json.load(file)
+    
+    # Connect to the SQLite database
+    conn = sqlite3.connect("instance/imposter.sqlite")
+    cursor = conn.cursor()
+
+    # Update the nickname for the specified personality ID
+    cursor.execute("""
+        UPDATE personalities
+        SET 
+            NAME = ?,
+            SYSTEM_PROMPT = ?,
+            INTRO_MESSAGE = ?,
+            IMAGE_PATH = ?
+        WHERE id = ?
+    """, (data['name'], data['system_prompt'], data['intro_message'], data['image_path'], personality_id))
+    # Commit changes and close the connection
+    conn.commit()
+    conn.close()
+
+    print(f"Personality {personality_id} updated successfully!")
+    pass
 
 def main():
     # Set up the argument parser
@@ -56,6 +82,11 @@ def main():
     delete_parser = subparsers.add_parser('delete', help='Delete a record from the database using its ID.')
     delete_parser.add_argument('personality_id', type=int, help='ID of the record to delete.')
 
+    # Parser for updating a record
+    update_parser = subparsers.add_parser('update', help='Update a record from the database using its ID.')
+    update_parser.add_argument('personality_id', type=int, help='ID of the record to update.')
+    update_parser.add_argument('json_file', help='Path to the JSON file.')
+
     # Parse the arguments
     args = parser.parse_args()
 
@@ -67,6 +98,8 @@ def main():
         CreateNewPersonalityFromJSON(args.json_file)
     elif args.operation == 'delete':
         delete_personality(args.personality_id)
+    elif args.operation == 'update':
+        update_personality(args.personality_id, args.json_file)
 
 
 if __name__ == '__main__':

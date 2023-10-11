@@ -4,3 +4,4 @@ API_KEY
 node_modules*
 build*
 # frontend/src/TestContact.jpeg
+.DS_Store
