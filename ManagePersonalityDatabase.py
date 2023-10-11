@@ -69,21 +69,21 @@ def update_personality(personality_id, json_filename):
 
 def main():
     # Set up the argument parser
-    parser = argparse.ArgumentParser(description='Manage data in a SQLite database.')
+    parser = argparse.ArgumentParser(description='Manage data in the personalities SQLite database.')
 
     # Subparsers for different operations
     subparsers = parser.add_subparsers(dest='operation', required=True)
 
     # Parser for inserting data
-    insert_parser = subparsers.add_parser('insert', help='Insert data from a JSON file into the database.')
+    insert_parser = subparsers.add_parser('insert', help='Insert data from a JSON file into the database. Args [json_file_path]]')
     insert_parser.add_argument('json_file', help='Path to the JSON file.')
 
     # Parser for deleting a record
-    delete_parser = subparsers.add_parser('delete', help='Delete a record from the database using its ID.')
+    delete_parser = subparsers.add_parser('delete', help='Delete a record from the database using its ID. Args [personality_id]')
     delete_parser.add_argument('personality_id', type=int, help='ID of the record to delete.')
 
     # Parser for updating a record
-    update_parser = subparsers.add_parser('update', help='Update a record from the database using its ID.')
+    update_parser = subparsers.add_parser('update', help='Update a record from the database using its ID. Args [personality_id, json_file_path]')
     update_parser.add_argument('personality_id', type=int, help='ID of the record to update.')
     update_parser.add_argument('json_file', help='Path to the JSON file.')
 
