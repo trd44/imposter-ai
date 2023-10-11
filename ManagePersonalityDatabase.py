@@ -16,9 +16,9 @@ def CreateNewPersonalityFromJSON(json_filename):
 
     # Insert data from the JSON file into the database
     cursor.execute("""
-        INSERT INTO personality (nickname, system_prompt, img)
+        INSERT INTO personalities (NAME, SYSTEM_PROMPT, IMAGE_PATH)
         VALUES (?, ?, ?)
-    """, (data['nickname'], data['system_prompt'], data['img']))
+    """, (data['name'], data['system_prompt'], data['image_path']))
 
     # Commit changes and close the connection
     conn.commit()
@@ -32,7 +32,7 @@ def delete_personality(personality_id):
     cursor = conn.cursor()
 
     # Delete record based on ID
-    cursor.execute("DELETE FROM personality WHERE id = ?", (personality_id,))
+    cursor.execute("DELETE FROM personalities WHERE ID = ?", (personality_id,))
 
     # Commit changes and close the connection
     conn.commit()
