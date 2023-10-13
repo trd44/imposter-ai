@@ -54,12 +54,12 @@ def register():
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
+                    "INSERT INTO users (USERNAME, PASSWORD) VALUES (?, ?)",
                     (username, generate_password_hash(password)),
                 )
                 db.commit()
                 user = db.execute(
-                    'SELECT * FROM user WHERE username = ?', (username,)
+                    'SELECT * FROM users WHERE USERNAME = ?', (username,)
                 ).fetchone()
             except db.IntegrityError:
                 error = f"User {username} is already registered."
@@ -67,8 +67,8 @@ def register():
             if error is None:
                 session.clear()
                 user = dict(user)
-                session['user_id'] = user['id']
-                token, token_expiry = create_token(user['id'])
+                session['user_id'] = user['ID']
+                token, token_expiry = create_token(user['ID'])
                 return jsonify({'token': token if isinstance(token, str) else token.decode('utf-8'), 'token_expiry': token_expiry}), 200
             else:
                 print("e2", error)
@@ -94,23 +94,22 @@ def login():
 
             db = get_db()
             user = db.execute(
-                'SELECT * FROM user WHERE username = ?', (username,)
+                'SELECT * FROM users WHERE USERNAME = ?', (username,)
             ).fetchone()
 
             if user is None:
                 return jsonify({'error': 'Incorrect username.'}), 400
-            elif not check_password_hash(user['password'], password):
+            elif not check_password_hash(user['PASSWORD'], password):
                 return jsonify({'error': 'Incorrect password.'}), 400
 
             session.clear()
             user = dict(user)
-            session['user_id'] = user['id']
-            token, token_expiry = create_token(user['id'])
+            session['user_id'] = user['ID']
+            token, token_expiry = create_token(user['ID'])
             return jsonify({'token': token if isinstance(token, str) else token.decode('utf-8'), 'token_expiry': token_expiry}), 200
 
         except Exception as e:
             # catch any other error
-            print('hi')
             print(e)
             return jsonify({'error': 'An error occurred, please try again later.'}), 500
 
@@ -131,7 +130,7 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
+            'SELECT * FROM users WHERE ID = ?', (user_id,)
         ).fetchone()
 
 
@@ -152,7 +151,7 @@ def login_required(view):
 
         # Fetch user and attach to g.user for duration of request
         g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
+            'SELECT * FROM users WHERE ID = ?', (user_id,)
         ).fetchone()
 
         return view(*args, **kwargs)

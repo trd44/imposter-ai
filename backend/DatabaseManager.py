@@ -1,6 +1,5 @@
 
 #region Imports
-import sqlite3
 from backend.db import get_db
 from backend.Utils import SerializeJson, DeserializeJson
 #endregion
@@ -19,28 +18,28 @@ class DatabaseManager:
     def GetAllPersonalities():
         """
         Returns a list of tuples where each tuple contains the following personality information,
-        (personality_id, nickname, image)
+        (Personality ID, Personality Name, The Path to the Personality's Image File)
         Will return None if empty
         """
         db = get_db()
         personality_list = db.execute('''
-            SELECT id, nickname, img
-            FROM personality
+            SELECT ID, NAME, IMAGE_PATH
+            FROM personalities
             ''').fetchall()
         return personality_list
 
     def GetChatList(user_id: int):
         """
         Returns a list of tuples where each tuple contains,
-        (personality_id, nickname)
+        (Personality ID, Personality Name)
         Will return None if empty
         """
         db = get_db()
         personality_list = db.execute('''
-            SELECT chat.personality_id, personality.nickname
-            FROM chat
-            JOIN personality ON chat.personality_id = personality.id
-            WHERE chat.user_id = ?
+            SELECT chats.PERSONALITY_ID, personalities.NAME
+            FROM chats
+            JOIN personalities ON chats.PERSONALITY_ID = personalities.ID
+            WHERE chats.USER_ID = ?
             ''', (user_id,)).fetchall()
         return personality_list
 
@@ -51,22 +50,22 @@ class DatabaseManager:
         """
         db = get_db()
         messages = db.execute('''
-            SELECT messages 
-            FROM chat 
-            WHERE user_id = ? AND personality_id = ?
+            SELECT MESSAGES 
+            FROM chats 
+            WHERE USER_ID = ? AND PERSONALITY_ID = ?
             ''', (user_id, personality_id)).fetchone()
         return DeserializeJson(messages[0]) if messages is not None else None
 
     def GetSystemPromptFromID(personality_id: int):
         """
-        Returns (nickname, deserialized system prompt json, img file path)
+        Returns (Personality Name, deserialized system prompt json, img file path)
         Will return None if cannot find
         """
         db = get_db()
         system_prompt = db.execute('''
-            SELECT nickname, system_prompt, img
-            FROM personality
-            WHERE id = ?
+            SELECT NAME, SYSTEM_PROMPT, IMAGE_PATH
+            FROM personalities
+            WHERE ID = ?
             ''', (personality_id,)).fetchone()
         
         if system_prompt is not None:
@@ -87,7 +86,7 @@ class DatabaseManager:
         # Insert chat if not exist, replace if does. Entire row will be replaced, so be sure to include all column data.
         try:
             db.execute('''
-                INSERT OR REPLACE INTO chat (user_id, personality_id, messages) 
+                INSERT OR REPLACE INTO chats (USER_ID, PERSONALITY_ID, MESSAGES) 
                 VALUES (?, ?, ?)
                 ''', (user_id, personality_id, SerializeJson(messages_json)))
             db.commit()
@@ -109,15 +108,15 @@ class DatabaseManager:
             if img_file is None:
                 '''When img_file is not provided, update only the non-image columns.'''
                 db.execute('''
-                    UPDATE personality
-                    SET nickname = ?, system_prompt = ?
-                    WHERE id = ?
+                    UPDATE personalities
+                    SET NAME = ?, SYSTEM_PROMPT = ?
+                    WHERE ID = ?
                     ''', (nickname, SerializeJson(system_prompt), personality_id))
     
             else:
                 '''If img_file is provided, replace the entire row including image '''
                 db.execute('''
-                    INSERT OR REPLACE INTO personality (id, nickname, system_prompt, img) 
+                    INSERT OR REPLACE INTO personalities (ID, NAME, SYSTEM_PROMPT, IMAGE_PATH) 
                     VALUES (?, ?, ?, ?)
                     ''', (personality_id, nickname, SerializeJson(system_prompt), img_file))
                 
