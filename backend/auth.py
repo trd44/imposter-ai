@@ -14,6 +14,7 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 def create_token(user_id):
     """Create the jwt authentication token and return it."""
+    print(f"Creating token with user_id: {user_id}")
     token_expiry = datetime.datetime.utcnow() + current_app.config['JWT_EXPIRATION_DELTA']
     token = jwt.encode({
         'user_id': user_id,
@@ -31,8 +32,10 @@ def decode_token(token):
             token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
         return payload['user_id']
     except jwt.ExpiredSignatureError:
+        print("Error, token expired")
         return None
     except jwt.InvalidTokenError:
+        print("Error, invalid token")
         return None
 
 
@@ -147,6 +150,7 @@ def login_required(view):
         token = auth_header.split(' ')[1]
 
         user_id = decode_token(token)  # Decode token to get user_id
+        print(f"User ID: {user_id}")
         if not user_id:
             print("Error, invalid or expired token")
             return jsonify({"error": "Invalid or expired token"}), 401

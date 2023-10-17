@@ -58,7 +58,7 @@ def update_personality(personality_id, json_filename):
             SYSTEM_PROMPT = ?,
             INTRO_MESSAGE = ?,
             IMAGE_PATH = ?
-        WHERE id = ?
+        WHERE ID = ?
     """, (data['name'], data['system_prompt'], data['intro_message'], data['image_path'], personality_id))
     # Commit changes and close the connection
     conn.commit()
