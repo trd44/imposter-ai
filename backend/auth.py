@@ -140,6 +140,7 @@ def login_required(view):
     def wrapped_view(*args, **kwargs):
         auth_header = request.headers.get('Authorization')
         if not auth_header or 'Bearer' not in auth_header:
+            print("Error, unauthorized")
             return jsonify({"error": "Unauthorized"}), 401
 
         # Extract token from "Bearer <token>"
@@ -147,6 +148,7 @@ def login_required(view):
 
         user_id = decode_token(token)  # Decode token to get user_id
         if not user_id:
+            print("Error, invalid or expired token")
             return jsonify({"error": "Invalid or expired token"}), 401
 
         # Fetch user and attach to g.user for duration of request
