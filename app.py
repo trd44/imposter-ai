@@ -66,6 +66,7 @@ def backend_assets(path):
 @app.route('/backend/fetch_contacts', methods=['GET'])
 @login_required
 def fetch_contacts():
+    print("fetch_contacts, fetching contacts")
     # TODO: unless personality table does not exist, should handle case where db request returns None
 
     # [1] Retrieve personality list from database

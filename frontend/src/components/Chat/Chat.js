@@ -76,6 +76,7 @@ const getImageUrl = (imageName) => {
   const fetchChatHistory = async () => {
     console.log("trying to call api/fetch_chat_history");
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch('api/fetch_chat_history', {
         method: 'POST',
         headers: {
