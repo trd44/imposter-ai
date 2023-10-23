@@ -2,6 +2,7 @@
 import argparse
 import json
 import sqlite3
+from backend.Utils import SerializeJson
 
 def CreateNewPersonalityFromJSON(json_filename):
     """
@@ -18,7 +19,7 @@ def CreateNewPersonalityFromJSON(json_filename):
     cursor.execute("""
         INSERT INTO personalities (NAME, SYSTEM_PROMPT, INTRO_MESSAGE, IMAGE_PATH)
         VALUES (?, ?, ?, ?)
-    """, (data['name'], data['system_prompt'], data['intro_message'], data['image_path']))
+    """, (data['name'], SerializeJson(data['system_prompt']), data['intro_message'], data['image_path']))
 
     # Commit changes and close the connection
     conn.commit()
@@ -59,7 +60,7 @@ def update_personality(personality_id, json_filename):
             INTRO_MESSAGE = ?,
             IMAGE_PATH = ?
         WHERE ID = ?
-    """, (data['name'], data['system_prompt'], data['intro_message'], data['image_path'], personality_id))
+    """, (data['name'], SerializeJson(data['system_prompt']), data['intro_message'], data['image_path'], personality_id))
     # Commit changes and close the connection
     conn.commit()
     conn.close()
