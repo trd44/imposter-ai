@@ -25,11 +25,8 @@ class ChatManager:
         self.model = model
         self.conversation_history = {}
 
-        # TODO: retrieve current conversation history for user
+        # Retrieve current conversation history for user
         self.UpdateConversationHistoryFromRemote()
-
-        # TODO: update UI with conversation history if it exists...
-        # When should this happen? Should the frontend manage its own content?
 
     def SendMessage(self, conv_id, message):
         """
