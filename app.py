@@ -18,10 +18,6 @@ from backend.DatabaseManager import DatabaseManager as dbm
 from backend.Utils import SerializeJson
 #endregion
 
-#region Data Imports
-from Presets.PresetData import TEST_PERSONALITY_ID 
-#endregion
-
 #region Application Start
 app = Flask(__name__, static_folder='frontend/build', static_url_path='')
 api = Api(app)
