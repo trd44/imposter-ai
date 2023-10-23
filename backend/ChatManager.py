@@ -104,7 +104,7 @@ class ChatManager:
 
     def StoreConversation(self, conv_id):
         """
-        Stores the current state of the conversation in the database.
+        Stores the current state of the conversation in the database. Will not update the personality table in any way.
 
         Args:
             conv_id : Conversation id
@@ -112,14 +112,6 @@ class ChatManager:
         # retreive messages from conversation
         messages = self.conversation_history[conv_id].GetMessages()
         dbm.SaveChat(self.user_id, conv_id, messages)
-
-        # TODO: handle when to save personality...for now always do
-        name = self.conversation_history[conv_id].GetPersonalityName()
-        system_prompt = self.conversation_history[conv_id].GetSystemPrompt()
-        img = self.conversation_history[conv_id].GetImg()
-        ## TODO: Do not save personality each time???
-        ## TODO: Address not overwriting the test contact image each time...where to update personality...
-        dbm.SavePersonality(conv_id, name, system_prompt, img)
 
     def QuerySavedConversations(self):
         """
