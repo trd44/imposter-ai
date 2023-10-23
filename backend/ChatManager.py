@@ -4,10 +4,6 @@ from backend.Conversation import Conversation
 from backend.DatabaseManager import DatabaseManager as dbm
 #endregion
 
-#region Test Data Imports
-from Presets.PresetData import TEST_PERSONALITY_NICKNAME, TEST_PERSONALITY_ID, TEST_SYSTEM_PROMPT, TEST_PERSONALITY_IMG
-#endregion
-
 class ChatManager:
 
     def __init__(self, user_id, database, model):
@@ -123,20 +119,17 @@ class ChatManager:
 
     def UpdateConversationHistoryFromRemote(self):
         """
-        Updates conversation list with remove conversations
+        Updates conversation list with any existing conversations from remote.
         """
         print("Updating Conversation History")
         conversation_list = self.QuerySavedConversations()
         print("Conversation List:")
         print(conversation_list)
-        #TODO: currently, we save all personality info in the conversation object, maybe we dont want to do that...
-        #TODO: should create this default conversation for every personality
         if conversation_list is None or conversation_list == []:
-            self.conversation_history[TEST_PERSONALITY_ID] = Conversation(TEST_PERSONALITY_ID, TEST_PERSONALITY_NICKNAME, [], TEST_SYSTEM_PROMPT, TEST_PERSONALITY_IMG)
-            print("No recorded conversations. Creating first one!", "First Conversation ID: ", TEST_PERSONALITY_ID)
+            print("No recorded conversations!")
         else:
             for conv_id, _ in conversation_list:
-                # get conversation
+                # Create conversation object for all retrieved convesations from remote
                 self.RetrieveConversation(conv_id)
         
     def RetrieveConversation(self, conv_id):
