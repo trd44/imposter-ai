@@ -23,6 +23,8 @@ class Conversation:
     def ExportSavedMessages(self):
         """
         Exports conversation into acceptable input format for OpenAI API request
+
+        Will presume that every item in the system prompt array list is a sentence.
         """
         # create system message
         message_export = []
@@ -31,7 +33,7 @@ class Conversation:
             for prompt in self.system_prompt_list:
                 if sys_prompt["content"] != "":
                     sys_prompt["content"] = sys_prompt["content"] + " "
-                sys_prompt["content"] = sys_prompt["content"] + prompt + "."
+                sys_prompt["content"] = sys_prompt["content"] + prompt
         
             message_export.append(sys_prompt)
 
