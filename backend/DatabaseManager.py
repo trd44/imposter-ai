@@ -56,20 +56,20 @@ class DatabaseManager:
             ''', (user_id, personality_id)).fetchone()
         return DeserializeJson(messages[0]) if messages is not None else None
 
-    def GetSystemPromptFromID(personality_id: int):
+    def GetPersonalityFromID(personality_id: int):
         """
         Returns (Personality Name, deserialized system prompt json, img file path)
         Will return None if cannot find
         """
         db = get_db()
         personality_row = db.execute('''
-            SELECT NAME, SYSTEM_PROMPT, IMAGE_PATH
+            SELECT NAME, SYSTEM_PROMPT, INTRO_MESSAGE, IMAGE_PATH
             FROM personalities
             WHERE ID = ?
             ''', (personality_id,)).fetchone()
         
         if personality_row is not None:
-            ret = (personality_row[0], DeserializeJson(personality_row[1]), personality_row[2])
+            ret = (personality_row[0], DeserializeJson(personality_row[1]), personality_row[2], personality_row[3])
         else:
             ret = None
         return ret
