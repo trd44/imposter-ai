@@ -9,7 +9,8 @@ class GPTModel:
         
         Presumes that the API key is set in the environment already...
         """
-        self.model_id = "gpt-3.5-turbo"
+        #self.model_id = "gpt-3.5-turbo"
+        self.model_id = "gpt-4"
         pass
 
     def SetModel(self, model_id):
