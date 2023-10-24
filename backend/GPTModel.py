@@ -37,7 +37,8 @@ class GPTModel:
         try:
             completion = openai.ChatCompletion.create(
                 model=self.model_id,
-                messages=conversation_messages
+                messages=conversation_messages,
+                temperature=1.2,
             )
             print("Model Completion:")
             print(completion)
