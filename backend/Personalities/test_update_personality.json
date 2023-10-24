@@ -1,6 +1,6 @@
 {
     "name":"Updated Sample",
-    "system_prompt":"Updated Sample System Prompt",
+    "system_prompt":["Updated Sample System Prompt"],
     "intro_message":"Updated Sample Intro Message",
     "image_path":"UpdatedTestContact.jpeg"
 }
