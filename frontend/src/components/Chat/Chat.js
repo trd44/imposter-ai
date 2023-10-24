@@ -189,11 +189,10 @@ const getImageUrl = (imageName) => {
 
         <div className="chat-wrapper">
           <h2>{contacts.find(contact => contact.id === activeContactId)?.name || "Unknown"}</h2>
-          Start by saying Hello!
           <div className="messages-section">
             <MessagesSection chatHistory={chatHistory} />
             {isTyping && <div className="message-bubble message-assistant">
-              <p className="typing-text">Imposter is typing</p>
+              <p className="typing-text">{contacts.find(contact => contact.id === activeContactId)?.name || "Unknown"} is typing</p>
             </div>}
 
 
