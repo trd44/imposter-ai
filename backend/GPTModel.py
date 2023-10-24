@@ -9,7 +9,8 @@ class GPTModel:
         
         Presumes that the API key is set in the environment already...
         """
-        self.model_id = "gpt-3.5-turbo"
+        #self.model_id = "gpt-3.5-turbo"
+        self.model_id = "gpt-4"
         pass
 
     def SetModel(self, model_id):
@@ -37,7 +38,8 @@ class GPTModel:
         try:
             completion = openai.ChatCompletion.create(
                 model=self.model_id,
-                messages=conversation_messages
+                messages=conversation_messages,
+                temperature=1.2,
             )
             print("Model Completion:")
             print(completion)

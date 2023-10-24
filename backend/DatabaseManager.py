@@ -62,14 +62,14 @@ class DatabaseManager:
         Will return None if cannot find
         """
         db = get_db()
-        system_prompt = db.execute('''
+        personality_row = db.execute('''
             SELECT NAME, SYSTEM_PROMPT, IMAGE_PATH
             FROM personalities
             WHERE ID = ?
             ''', (personality_id,)).fetchone()
         
-        if system_prompt is not None:
-            ret = (system_prompt[0], DeserializeJson(system_prompt[1]), system_prompt[2])
+        if personality_row is not None:
+            ret = (personality_row[0], DeserializeJson(personality_row[1]), personality_row[2])
         else:
             ret = None
         return ret
