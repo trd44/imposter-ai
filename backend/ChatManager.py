@@ -154,20 +154,23 @@ class ChatManager:
 
         return self.CreateConversation(conv_id, messages)
     
-    def CreateConversation(self, conv_id, messages = []):
+    def CreateConversation(self, personality_id, messages = []):
         """
         Creates a new conversation object and assigns it to the conv_id key in conversation_history dict
 
         Args:
-            conv_id : Conversation id/personality id
+            personality_id : Personality id
             messages: Array of messages related to conversation. If new conversation leave empty.
         """
         # TODO: error checking (1) if conv_id does not exist
         # [1] Get personality information from database
-        name, system_prompt, img = dbm.GetSystemPromptFromID(conv_id)
-        print("Retreived system prompt for, ", name)
-        print(system_prompt)
+        name, system_prompt, intro_message, img = dbm.GetPersonalityFromID(personality_id)
+        print(f"Retrieved personality {name}")
+
+        if messages == []:
+            # If no messages are provided, create a new conversation
+            messages.append({"role" : "assistant", "content": intro_message})
 
         # [2] create new conversation in history with personality and message information
-        self.conversation_history[conv_id] = Conversation(conv_id, name, messages, system_prompt, img)
-        return self.conversation_history[conv_id]
+        self.conversation_history[personality_id] = Conversation(personality_id, name, messages, system_prompt, img)
+        return self.conversation_history[personality_id]
