@@ -1,16 +1,16 @@
 // src/components/NavBar/NavBar.js
 
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import './NavBar.css';
 
-const NavBar = ({ token, setToken, username, setUsername }) => {
+const NavBar = ({token, setToken, username, setUsername}) => {
   const navigate = useNavigate();
 
   const logout = async () => {
-    const response = await fetch('/auth/logout', {method: 'POST'})
+    const response = await fetch('/auth/logout', {method: 'POST'});
     const data = await response.json();
-    if (data.message === 'User logged out'){
+    if (data.message === 'User logged out') {
       // Log the user out on the frontend by setting token and username to null
       setToken(null);
       setUsername(null);
@@ -18,11 +18,11 @@ const NavBar = ({ token, setToken, username, setUsername }) => {
       localStorage.removeItem('username');
 
       // Navigate the user to the home page
-      navigate('/')
+      navigate('/');
     } else {
-      console.error('Error logging out')
+      console.error('Error logging out');
     }
-  }
+  };
 
   return (
     <nav className="navbar">
@@ -43,6 +43,13 @@ const NavBar = ({ token, setToken, username, setUsername }) => {
       )}
     </nav>
   );
+};
+
+NavBar.propTypes = {
+  token: PropTypes.string,
+  setToken: PropTypes.func.isRequired,
+  username: PropTypes.string,
+  setUsername: PropTypes.func.isRequired,
 };
 
 export default NavBar;

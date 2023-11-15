@@ -44,18 +44,15 @@ const Home = ({token}) => {
 
       <section>
         <h2>Our Personalities</h2>
-        <p>David Attenborough</p>
-        <p>Anthony Bourdain</p>
-        <p>Bill Gates</p>
-        <p>Kobe Bryant</p>
-        <p>Lil Wayne</p>
-        <p>Henry McCord</p>
-        <p>Thor</p>
-        <p>Severus Snape</p>
-        <p>Gollum</p>
-        <p>Tyrion Lannister</p>
+        <p>
+          David Attenborough, Anthony Bourdain, Bill Gates, Kobe Bryant,
+           Lil Wayne, Henry McCord, MCU Thor, Severus Snape, Gollum,
+           Tyrion Lannister
+        </p>
         <p>More coming soon...</p>
       </section>
+
+      <br />
 
       <section>
         <h2>Updates</h2>
@@ -70,12 +67,12 @@ const Home = ({token}) => {
 
       <section>
         <h2>About Us</h2>
-        <p>We`&apos;`re two friends, Tim and Christian,
+        <p>We&apos;re two friends, Tim and Christian,
           passionate about AI and its potential...
         <br />
         <br />
         If you have any suggestions, questions,
-        or want to reach out in general please email us at
+        or want to reach out in general please email us at &nbsp;
         <a
           href="mailto:imposter.ai.2023@gmail.com"
           target='_blank'
@@ -84,6 +81,9 @@ const Home = ({token}) => {
         </a>
         </p>
       </section>
+
+      <br />
+
     </div>
   );
 };
