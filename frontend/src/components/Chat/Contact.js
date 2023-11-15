@@ -7,7 +7,7 @@ import React from 'react';
  * It displays the contact's name, profile picture, and last message preview.
  * It also handles user interaction by calling the onClick callback when
  * clicked.
- * @return{React.Component} The Contact component UI.
+ * @return {React.Component} The Contact component UI.
  */
 function Contact({contact, onClick}) {
   return (
