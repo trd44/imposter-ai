@@ -215,7 +215,7 @@ export default function Chat() {
                       (contact) => contact.id === activeContactId,
                   )?.name || 'Unknown'
                 }
-                is typing
+                &nbsp;is typing
               </p>
             </div>}
 
