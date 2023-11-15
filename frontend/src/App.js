@@ -32,10 +32,10 @@ const App = () => {
     const tokenExpiryValue = localStorage.getItem('tokenExpiry');
     const storedTokenExpiry = Number(tokenExpiryValue) * 1000;
 
+    // Check if token is valid
     if (storedToken && new Date().getTime() < storedTokenExpiry) {
       setToken(storedToken);
     } else {
-      // If the token is expired, clear it from local storage
       localStorage.removeItem('token');
       localStorage.removeItem('tokenExpiry');
       localStorage.removeItem('username');
