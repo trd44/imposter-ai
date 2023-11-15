@@ -26,14 +26,19 @@ export default function Chat() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sendButtonEnabled, setSendButtonEnabled] = useState(true);
 
+  // Fetch contacts when component mounts
   useEffect(() => {
     fetchContacts();
   }, []);
 
+  // Fetch chat history when active contact changes
   useEffect(() => {
     fetchChatHistory();
   }, [activeContactId]);
 
+  /**
+   * Fetches contacts from the backend and updates the contacts state.
+   */
   const fetchContacts = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -54,7 +59,7 @@ export default function Chat() {
       const fetchedContacts = data.map((contact) => ({
         id: contact.id,
         name: contact.nickname,
-        image: getContactPhoto(contact.img),
+        image: getContactPhotoURL(contact.img),
         lastMessage: 'Hey there!', // TODO: replace with actual message
       }));
 
@@ -64,11 +69,19 @@ export default function Chat() {
     }
   };
 
-  const getContactPhoto = (imageName) => {
-    console.log('Fetching Image: ', imageName);
-    return '/backend_assets/${imageName}';
+  /**
+   * Returns the URL for a contact's photo.
+   * @param {string} imageName The name of the image.
+   * @return {string} The URL of the image.
+   */
+  const getContactPhotoURL = (imageName) => {
+    return `/backend_assets/${imageName}`;
   };
 
+  /**
+   * Fetches chat history for the active contact from the backend and updates
+   * the chat history state.
+   */
   const fetchChatHistory = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -92,13 +105,25 @@ export default function Chat() {
     }
   };
 
-  // When a contact is clicked, update the active contact ID
+  /**
+   * Handles a contact being clicked by the user. Updates the active contact ID
+   * and closes the contacts list menu.
+   * @param {number} contactId The ID of the contact that was clicked.
+   * @return {void}
+   */
   const handleContactClick = (contactId) => {
     setActiveContactId(contactId);
     setMenuOpen(false);
   };
 
-  // Send message to the backend and receive response
+  /**
+   * Sends a new message to the active contact and updates the chat history
+   * state.
+   * @param {string} newMessage The new message to send.
+   * @param {number} activeContactId The ID of the active contact.
+   * @return {void}
+   * TODO: Add error handling
+   */
   const sendMessage = async (newMessage, activeContactId) => {
     // If new message is empty, do nothing
     if (!newMessage.trim()) return;
@@ -106,48 +131,57 @@ export default function Chat() {
     setSendButtonEnabled(false);
     setIsTyping(true);
 
-    // Add the new message to the chat history immediately
-    setChatHistory((prevChatHistory) => {
-      const updatedChatHistory = [...prevChatHistory,
-        {
-          role: 'user',
-          content: newMessage,
+    // Add new message to chat history (Which will display immediately)
+    setChatHistory((prevChatHistory) => [...prevChatHistory, {
+      role: 'user',
+      content: newMessage,
+    }]);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('api/send_user_message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
-      ];
+        body: JSON.stringify({
+          newMessage,
+          activeContactId,
+        }),
+      });
 
-      return updatedChatHistory;
-    });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    const token = localStorage.getItem('token');
-    const response = await fetch('api/send_user_message', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        newMessage,
-        activeContactId,
-      }),
-    });
+      const data = await response.json();
 
-    const data = await response.json();
+      if (!data || typeof data !== 'object' || !data.content) {
+        throw new Error('Invalid response format');
+      }
 
-    setIsTyping(false);
-    setSendButtonEnabled(true);
-
-    // Verify that response id matches the activeContactId
-    if (data.id === activeContactId) {
-      // Update chat history (which will impact what is displayed to user)
-      setChatHistory((prevChatHistory) => [
-        ...prevChatHistory,
-        {
-          role: 'assistant',
-          content: data.content,
-        },
-      ]);
-    } else {
-      console.error('Response ID does not match active contact ID');
+      // Verify that response id matches the activeContactId
+      if (data.id === activeContactId) {
+        // Update chat history (which will impact what is displayed to user)
+        setChatHistory((prevChatHistory) => [
+          ...prevChatHistory,
+          {
+            role: 'assistant',
+            content: data.content,
+          },
+        ]);
+      } else {
+        console.error('Response ID does not match active contact ID');
+      }
+    } catch (error) {
+      console.error('Failed to send message: ', error);
+      // Handle UI updates or notifications for error feedback
+      // Might want to remove the optimistic message addition
+      // if we can determine that the message definitely failed to send
+    } finally {
+      setIsTyping(false);
+      setSendButtonEnabled(true);
     }
   };
 
