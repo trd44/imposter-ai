@@ -23,7 +23,7 @@ class DatabaseManager:
         """
         db = get_db()
         personality_list = db.execute('''
-            SELECT ID, NAME, IMAGE_PATH
+            SELECT ID, NAME, IMAGE_PATH, INTRO_MESSAGE
             FROM personalities
             ''').fetchall()
         return personality_list

@@ -68,13 +68,42 @@ def fetch_contacts():
     # [1] Retrieve personality list from database
     personality_list = dbm.GetAllPersonalities()
 
-    # [2] Convert list of tuples into list of dictionaries
-    personality_list_dict_format = [dict(zip(['id', 'nickname', 'img'], tpl)) for tpl in personality_list]
+    # [2] Convert list of tuples into dictionaries identified by personality_id
+    # {id: {id:,nickname:,img:,last_message:,},...}
+    #personality_list_dict_format = [dict(zip(['id', 'nickname', 'img', 'last_message'], tpl)) for tpl in personality_list]
+    personality_dict = {tpl[0]: dict(zip(['id', 'nickname', 'img', 'last_message'], tpl)) for tpl in personality_list}
 
-    # [3] Convert list of dictionaries into JSON format
+    # [3] Retrieve Chat List
+    user_id = g.user['id']
+    chat_list = dbm.GetChatList(user_id)
+    
+    # [4] Update any last message given personalities with existing conversations
+    for personality_id, _ in chat_list:
+        last_message = get_last_message(user_id, personality_id)
+        if last_message is None:
+            print(f"Database Error. Conversation for [{personality_id}] not found!")
+        else:
+            personality_dict[personality_id]['last_message'] = last_message
+
+    # [X] Convert to list of dictionaries in JSON format
+    personality_list_dict_format = list(personality_dict.values())
     personality_list_json_format = SerializeJson(personality_list_dict_format)
 
     return personality_list_json_format
+
+def get_last_message(user_id: int, personality_id: int) -> str:
+    """
+    Retrieves the last message given user_id and personality_id. If
+    conversation does not exist, will return None
+    """
+    last_message = None
+    message_log = dbm.GetChatFromID(user_id, personality_id)
+
+    # return the last message (content key in dict) from log
+    if message_log:
+        last_message = message_log[-1]["content"]
+    return last_message
+
 #endregion
 
 
