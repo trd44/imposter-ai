@@ -85,6 +85,9 @@
 
 .contact-last-message {
   color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .copy-icon {
