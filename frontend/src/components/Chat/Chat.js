@@ -171,6 +171,8 @@ const getImageUrl = (imageName) => {
       ]);
     }
 
+    // When to re-update the last message received in the contact list?...
+
     // NOTE: Will not clear text box when receive response.
   }
 
