@@ -49,7 +49,7 @@ const getImageUrl = (imageName) => {
         id: contact.id,
         name: contact.nickname,
         image: getImageUrl(contact.img),
-        lastMessage: 'Hey there!', // TODO: replace with actual message data if availabe
+        lastMessage: contact.last_message, // TODO: replace with actual message data if availabe
       }));
   
       // Use setContacts to update the state
