@@ -174,6 +174,12 @@ export default function Chat() {
       } else {
         console.error('Response ID does not match active contact ID');
       }
+      // Update the 'last message' for the contact where the response was
+      // receieved
+      const updatedContacts = contacts.map((contact) =>
+        contact.id === data.id ? {...contact, lastMessage: data.content} :
+        contact);
+      setContacts(updatedContacts);
     } catch (error) {
       console.error('Failed to send message: ', error);
       // Handle UI updates or notifications for error feedback
