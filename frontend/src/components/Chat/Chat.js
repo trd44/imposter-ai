@@ -1,6 +1,6 @@
 // src/components/Chat/Chat.js
 
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 
 import InputSection from './InputSection';
 import MessagesSection from './MessagesSection';
@@ -8,171 +8,182 @@ import ContactList from './ContactList';
 
 import './Chat.css';
 
+/**
+ * Chat component representing the main chat interface of the application.
+ * It handles displaying and managing chat conversations, contacts, and the
+ * input section for sending new messages. This component fetches and displays
+ * chat history for the active contact and updates it based on user interaction.
+ * It also manages the contacts list and handles user actions like selecting a
+ * contact to chat with or sending new messages.
+ *
+ * @return {React.Component} The Chat component UI.
+ */
 export default function Chat() {
-  const [token, setToken] = useState();
-  const [name, setName] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [sendButtonEnabled, setSendButtonEnabled] = useState(true);
   const [activeContactId, setActiveContactId] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-// Retreive an image from URL
-const getImageUrl = (imageName) => {
-    console.log('Fetching Image: ', imageName);
-    return `/backend_assets/${imageName}`
-  }
-
+  const [chatHistory, setChatHistory] = useState([]);
   const [contacts, setContacts] = useState([]);
-  
-  // Function to fetch contacts (personalities) from the database
+  const [isTyping, setIsTyping] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [sendButtonEnabled, setSendButtonEnabled] = useState(true);
+
+  // Fetch contacts when component mounts
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  // Fetch chat history when active contact changes
+  useEffect(() => {
+    fetchChatHistory();
+  }, [activeContactId]);
+
+  /**
+   * Fetches contacts from the backend and updates the contacts state.
+   */
   const fetchContacts = async () => {
     try {
-      // Retrieve array of personalities for current user
-      console.log("trying to call backend/fetch_contacts");
       const token = localStorage.getItem('token');
       const response = await fetch('backend/fetch_contacts', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
       });
-  
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Error fetching contacts. status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-      
-      // Map through the data (array of contacts) to create the contact objects
-      const fetchedContacts = data.map(contact => ({
+
+      const fetchedContacts = data.map((contact) => ({
         id: contact.id,
         name: contact.nickname,
-        image: getImageUrl(contact.img),
-        lastMessage: 'Hey there!', // TODO: replace with actual message data if availabe
+        image: getContactPhotoURL(contact.img),
+        lastMessage: 'Hey there!', // TODO: replace with actual message
       }));
-  
-      // Use setContacts to update the state
+
       setContacts(fetchedContacts);
-      
     } catch (error) {
       console.error(`Failed to fetch contacts: ${error}`);
     }
   };
-  
-  // Call fetchContacts once when the component is mounted
-  useEffect(() => {
-    fetchContacts();
-  }, []);
-  
 
-  const [chatHistory, setChatHistory] = useState([]);
+  /**
+   * Returns the URL for a contact's photo.
+   * @param {string} imageName The name of the image.
+   * @return {string} The URL of the image.
+   */
+  const getContactPhotoURL = (imageName) => {
+    return `/backend_assets/${imageName}`;
+  };
 
-  console.log('Chat component function is running');
-
-  // Fetch contacts from the server and setContacts
-  // TODO: provide which personality id to get conversation for. Assume that conversation exists in backend even if not talked to before.
-  // Backend handles new covnersations [COMPLETED]
+  /**
+   * Fetches chat history for the active contact from the backend and updates
+   * the chat history state.
+   */
   const fetchChatHistory = async () => {
-    console.log("trying to call api/fetch_chat_history");
     try {
       const token = localStorage.getItem('token');
       const response = await fetch('api/fetch_chat_history', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          id: activeContactId
-        })
+          id: activeContactId,
+        }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      console.log("retrieving new history for the contact: ", activeContactId)
       const chatHistory = await response.json();
-      console.log("updating chat history given response!")
       setChatHistory(chatHistory);
     } catch (error) {
       console.error('Failed to fetch chat history: ', error);
     }
   };
 
-  useEffect(() => {
-    fetchChatHistory();
-  }, [activeContactId]);
-
-  // Select contact to have conversation with
+  /**
+   * Handles a contact being clicked by the user. Updates the active contact ID
+   * and closes the contacts list menu.
+   * @param {number} contactId The ID of the contact that was clicked.
+   * @return {void}
+   */
   const handleContactClick = (contactId) => {
-
-    // [1] Update active contact ID
-    console.log(`Contact clicked: ${contactId}`);
     setActiveContactId(contactId);
-    console.log('Updated Contact: ', activeContactId)
-    // [2] Retrieve and display chat history for selected contact (will happen automatically)
-
-    // [3] Transition UI for chatting with contact
-    setMenuOpen(false); // Close the contacts menu
+    setMenuOpen(false);
   };
 
-  // Send message to backend and get response. Async, so user can continue to use UI
+  /**
+   * Sends a new message to the active contact and updates the chat history
+   * state.
+   * @param {string} newMessage The new message to send.
+   * @param {number} activeContactId The ID of the active contact.
+   * @return {void}
+   * TODO: Add error handling
+   */
   const sendMessage = async (newMessage, activeContactId) => {
-
-    // Ensure newMessage is not an empty string
+    // If new message is empty, do nothing
     if (!newMessage.trim()) return;
 
     setSendButtonEnabled(false);
     setIsTyping(true);
 
-    // Update the chat history with the User's newest message
-    setChatHistory(prevChatHistory => {
-      const updatedChatHistory = [...prevChatHistory,
-      {
-        role: "user",
-        content: newMessage,
-      },
+    // Add new message to chat history (Which will display immediately)
+    setChatHistory((prevChatHistory) => [...prevChatHistory, {
+      role: 'user',
+      content: newMessage,
+    }]);
 
-      ];
-      console.log(updatedChatHistory);
-      return updatedChatHistory;
-    });
-
-    // Call the send_user_message function on the backend
-    //    * The fetch request below is a POST request to "/api/send_user_message"
-    //    * The data sent is 'newMessage' which is assigned the value of whatever
-    //    * the user has entered into the chat input field.
-    const token = localStorage.getItem('token');
-    const response = await fetch('api/send_user_message', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ newMessage, activeContactId }), // Include the newMessage and ID in the body sent to the server
-    });
-
-    const data = await response.json();
-
-    setIsTyping(false);
-    setSendButtonEnabled(true);
-
-    // Verify that response id matches the request ID, e.g. data.id == id
-    // IFF response id matches active ID, update chat history (which will impact what is displayed to user)
-    // ELSE: display nothing new
-    if (data.id === activeContactId) {
-      setChatHistory(prevChatHistory => [
-        ...prevChatHistory,
-        {
-          role: "assistant",
-          content: data.content,
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('api/send_user_message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
+        body: JSON.stringify({
+          newMessage,
+          activeContactId,
+        }),
+      });
 
-      ]);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data || typeof data !== 'object' || !data.content) {
+        throw new Error('Invalid response format');
+      }
+
+      // Verify that response id matches the activeContactId
+      if (data.id === activeContactId) {
+        // Update chat history (which will impact what is displayed to user)
+        setChatHistory((prevChatHistory) => [
+          ...prevChatHistory,
+          {
+            role: 'assistant',
+            content: data.content,
+          },
+        ]);
+      } else {
+        console.error('Response ID does not match active contact ID');
+      }
+    } catch (error) {
+      console.error('Failed to send message: ', error);
+      // Handle UI updates or notifications for error feedback
+      // Might want to remove the optimistic message addition
+      // if we can determine that the message definitely failed to send
+    } finally {
+      setIsTyping(false);
+      setSendButtonEnabled(true);
     }
-
-    // NOTE: Will not clear text box when receive response.
-  }
+  };
 
   return (
     <div className='chat-container'>
@@ -183,23 +194,37 @@ const getImageUrl = (imageName) => {
       </div>
       <div className={`main-content ${menuOpen ? 'menu-open' : ''}`}>
         <div className={`contacts-section ${menuOpen ? 'open' : ''}`}>
-          {/* <h2>Contacts</h2> */}
-          <ContactList contacts={contacts} onContactClick={handleContactClick} />
+          <ContactList
+            contacts={contacts}
+            onContactClick={handleContactClick}
+          />
         </div>
 
         <div className="chat-wrapper">
-          <h2>{contacts.find(contact => contact.id === activeContactId)?.name || "Unknown"}</h2>
+          <h2>
+            {contacts.find(
+                (contact) => contact.id === activeContactId,
+            )?.name || 'Unknown'}
+          </h2>
           <div className="messages-section">
             <MessagesSection chatHistory={chatHistory} />
             {isTyping && <div className="message-bubble message-assistant">
-              <p className="typing-text">{contacts.find(contact => contact.id === activeContactId)?.name || "Unknown"} is typing</p>
+              <p
+                className="typing-text">{
+                  contacts.find(
+                      (contact) => contact.id === activeContactId,
+                  )?.name || 'Unknown'
+                }
+                &nbsp;is typing
+              </p>
             </div>}
 
 
           </div>
-          {/* The '0' is a placeholder for the message id
-        TODO: replace the hardcoded ID with a state variable tracking ID */}
-          <InputSection disabled={!sendButtonEnabled} sendMessage={(message) => sendMessage(message, activeContactId)} />
+          <InputSection
+            disabled={!sendButtonEnabled}
+            sendMessage={(message) => sendMessage(message, activeContactId)}
+          />
         </div>
       </div>
     </div>
