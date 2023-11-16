@@ -185,7 +185,7 @@ export default function Chat() {
     }
   };
 
-    // When to re-update the last message received in the contact list?...
+  // When to re-update the last message received in the contact list?...
   return (
     <div className='chat-container'>
       <div className="hamburger">
