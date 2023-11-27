@@ -72,11 +72,19 @@ def fetch_contacts():
     personality_list = dbm.GetAllPersonalities()
 
     # [2] Convert list of tuples into dictionaries identified by personality_id
-    # {id: {id:,nickname:,img:,last_message:,},...}
-    #personality_list_dict_format = [dict(zip(['id', 'nickname', 'img', 'last_message'], tpl)) for tpl in personality_list]
+    # {
+    #   id:
+    #   {
+    #       id:,
+    #       nickname:,
+    #       img:,
+    #       last_message:
+    #   },
+    #   ...
+    # }
     personality_dict = {tpl[0]: dict(zip(['id', 'nickname', 'img', 'last_message'], tpl)) for tpl in personality_list}
 
-    # [3] Retrieve Chat List
+    # [3] Retrieve chat list
     user_id = g.user['id']
     chat_list = dbm.GetChatList(user_id)
     
@@ -88,7 +96,7 @@ def fetch_contacts():
         else:
             personality_dict[personality_id]['last_message'] = last_message
 
-    # [X] Convert to list of dictionaries in JSON format
+    # [5] Convert to list of dictionaries in JSON format
     personality_list_dict_format = list(personality_dict.values())
     personality_list_json_format = SerializeJson(personality_list_dict_format)
     return personality_list_json_format
@@ -115,15 +123,16 @@ def send_user_message():
     """
     API endpoint to handle sending user messages.
     """
+    # [1] Get the user's input
     data = request.json
 
-    # Startup chat manager
+    # [2] Startup chat manager
     chat_manager = ChatManager(g.user['id'], None, GPTModel())
 
-    # Send message to provided personality
+    # [3] Send message to provided personality
     response = chat_manager.SendMessage(data['activeContactId'], data['newMessage'])
 
-    # Return ChatGPT's response
+    # [4] Return ChatGPT's response
     return response
 
 @app.route("/api/fetch_chat_history", methods=['POST'])
@@ -132,20 +141,20 @@ def fetch_chat_history():
     """
     API endpoint to fetch chat history.
     """
+    # [1] Get user's input
     print("fetch_chat_history, retreiving data from json")
     data = request.json
 
-    # Startup chat manager
+    # [2] Startup chat manager
     print("fetch_chat_history, setting up chat manager")
     chat_manager = ChatManager(g.user['id'], None, GPTModel())
 
-    # Retreive conversation given ID
+    # [3] Retreive conversation given ID
     print(f"fetch_chat_history, personality_id: {data['id']}, type: {type(data['id'])}")
     conversation = chat_manager.RetrieveConversation(data['id'])
 
-    # Export conversation history
+    # [4] Export conversation history
     message_history = conversation.ExportSavedMessages()
-
     return message_history
 #endregion
 
