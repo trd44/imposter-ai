@@ -31,15 +31,19 @@ except OSError:
 cb.load_openai_api_key()
 #endregion
 
-# Serve the static files in the build directory
 @app.route('/', defaults={'path': ''})
 def serve(path):
+    """
+    Serve the static files in the build directory.
+    """
     print(path)
     return send_from_directory(app.static_folder,'index.html')
 
-# Handle favicon requests
 @app.route('/favicon.ico')
 def favicon():
+    """
+    Handle favicon requests.
+    """
     return send_from_directory(os.path.join(app.root_path, 'build'), 'favicon.ico')
 
 # Initialize the database and register the auth blueprint
@@ -49,13 +53,19 @@ app.register_blueprint(auth.bp)
 #region AssetsHandling
 @app.route('/backend_assets/<path:path>')
 def backend_assets(path):
+    """
+    Provide link to backend hosted asset given path.
+    """
     return send_from_directory('backend/static/assets', path)
 #endregion
 
-#region
+#region ContactRetrieval
 @app.route('/backend/fetch_contacts', methods=['GET'])
 @login_required
 def fetch_contacts():
+    """
+    Retrieve contact information from personality table.
+    """
     print("fetch_contacts, fetching contacts")
     # TODO: unless personality table does not exist, should handle case where db request returns None
 
@@ -82,33 +92,31 @@ def fetch_contacts():
     # [X] Convert to list of dictionaries in JSON format
     personality_list_dict_format = list(personality_dict.values())
     personality_list_json_format = SerializeJson(personality_list_dict_format)
-
     return personality_list_json_format
 
 def get_last_message(user_id: int, personality_id: int) -> str:
     """
     Retrieves the last message given user_id and personality_id. If
-    conversation does not exist, will return None
+    conversation does not exist, will return None.
     """
     last_message = None
     message_log = dbm.GetChatFromID(user_id, personality_id)
 
-    # return the last message (content key in dict) from log
+    # Return the last message (content key in dict) from log
     if message_log:
         last_message = message_log[-1]["content"]
     return last_message
-
 #endregion
 
 
 #region ChatMessaging
-
-# API endpoint to handle sending user messages
 # TODO: update request.json to contain the personality ID as well [COMPLETED]
 @app.route("/api/send_user_message", methods=['POST'])
 @login_required
 def send_user_message():
-    # Get the user's input
+    """
+    API endpoint to handle sending user messages.
+    """
     data = request.json
 
     # Startup chat manager
@@ -120,12 +128,13 @@ def send_user_message():
     # Return ChatGPT's response
     return response
 
-# API endpoint to fetch chat history
 # TODO: request should specify what personality to request history from [COMPLETED]
 @app.route("/api/fetch_chat_history", methods=['POST'])
 @login_required
 def fetch_chat_history():
-    # Get user's input
+    """
+    API endpoint to fetch chat history.
+    """
     print("fetch_chat_history, retreiving data from json")
     data = request.json
 
@@ -141,12 +150,13 @@ def fetch_chat_history():
     message_history = conversation.ExportSavedMessages()
 
     return message_history
-
 #endregion
 
-# Handle 404 errors by sending the index.html static file
 @app.errorhandler(404)
 def not_found(e):
+    """
+    Handle 404 errors by sending the index.html static file.
+    """
     return app.send_static_file('index.html')
 
 
