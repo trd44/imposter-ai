@@ -1,16 +1,14 @@
 #region General/API Imports
 import os
-import datetime
 from flask import Flask, request, send_from_directory, g
 from flask_restful import Api
-from flask_cors import CORS
-import openai
 #endregion
 
 #region Backend Imports
+from backend import db
+from backend import auth
 from backend.config import Config
 import backend.callbacks as cb
-from backend.HelloApiHandler import HelloApiHandler
 from backend.ChatManager import ChatManager
 from backend.GPTModel import GPTModel
 from backend.auth import login_required
@@ -23,7 +21,6 @@ app = Flask(__name__, static_folder='frontend/build', static_url_path='')
 api = Api(app)
 app.config.from_object(Config)
 
-
 # Ensure the instance folder exists
 try:
     os.makedirs(app.instance_path)
@@ -32,7 +29,6 @@ except OSError:
 
 # Load the API Key
 cb.load_openai_api_key()
-
 #endregion
 
 # Serve the static files in the build directory
@@ -47,9 +43,7 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'build'), 'favicon.ico')
 
 # Initialize the database and register the auth blueprint
-from backend import db
 db.init_app(app)
-from backend import auth
 app.register_blueprint(auth.bp)
 
 #region AssetsHandling
