@@ -67,9 +67,8 @@ def fetch_contacts():
     Retrieve contact information from personality table.
     """
     print("fetch_contacts, fetching contacts")
-    # TODO: unless personality table does not exist, should handle case where db request returns None
-
     # [1] Retrieve personality list from database
+    # TODO: handle case where fetching all personalities returns none
     personality_list = dbm.GetAllPersonalities()
 
     # [2] Convert list of tuples into dictionaries identified by personality_id
@@ -110,7 +109,6 @@ def get_last_message(user_id: int, personality_id: int) -> str:
 
 
 #region ChatMessaging
-# TODO: update request.json to contain the personality ID as well [COMPLETED]
 @app.route("/api/send_user_message", methods=['POST'])
 @login_required
 def send_user_message():
@@ -128,7 +126,6 @@ def send_user_message():
     # Return ChatGPT's response
     return response
 
-# TODO: request should specify what personality to request history from [COMPLETED]
 @app.route("/api/fetch_chat_history", methods=['POST'])
 @login_required
 def fetch_chat_history():
