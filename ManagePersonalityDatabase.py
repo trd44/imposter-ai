@@ -8,8 +8,8 @@ def CreateNewPersonalityFromJSON(json_filename: str):
     """
     Will create a new personality in the personality table from a JSON file.
     
-    args:
-        json_filename: JSON filename (absolute path)
+    Args:
+        json_filename (str): JSON filename (absolute path)
     """
     # [1] Extract personality data from JSON file
     with open(json_filename, 'r') as file:
@@ -35,8 +35,8 @@ def delete_personality(personality_id: int):
     """
     Will delete personality from personality table.
 
-    args:
-        personality_id: ID of personality to remove from table
+    Args:
+        personality_id (int): ID of personality to remove from table
     """
     # [1] Connect to the SQLite database
     conn = sqlite3.connect("instance/imposter.sqlite")
@@ -55,9 +55,9 @@ def update_personality(personality_id: int, json_filename: str):
     """
     Update the personality by its ID from JSON file.
 
-    args:
-        personality_id: ID of personality to update
-        json_filename: JSON filename (absolute path)
+    Args:
+        personality_id (int): ID of personality to update
+        json_filename (str): JSON filename (absolute path)
     """
     # [1] Extract personality data from JSON file
     with open(json_filename, 'r') as file:
