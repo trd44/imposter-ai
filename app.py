@@ -1,3 +1,15 @@
+"""
+app.py
+
+Author: Christian Welling, Tim Duggan
+Date: 12/3/2023
+Company: ImposterAI
+Contact: csw73@cornell.edu
+
+This is a Python program using Flask framework to launch the backend server
+for ImposterAI application.
+"""
+
 # region General/API Imports
 import os
 from flask import Flask, request, send_from_directory, g
