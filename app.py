@@ -25,7 +25,7 @@ from backend import auth
 from backend.config import Config
 import backend.callbacks as cb
 from backend.chat_manager import ChatManager
-from backend.GPTModel import GPTModel
+from backend.gpt_model import GPTModel
 from backend.auth import login_required
 from backend.database_manager import DatabaseManager as dbm
 from backend.utils import SerializeJson
