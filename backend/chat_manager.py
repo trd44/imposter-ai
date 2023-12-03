@@ -1,11 +1,11 @@
-
-#region Imports
-from backend.Conversation import Conversation
+# region Imports
+from backend.conversation import Conversation
 from backend.DatabaseManager import DatabaseManager as dbm
-#endregion
+
+# endregion
+
 
 class ChatManager:
-
     def __init__(self, user_id, database, model):
         """
         Manages conversations and API model usage for a user
@@ -36,10 +36,10 @@ class ChatManager:
         # If conversation ID does not exist, create new conversation
         if conv_id not in self.conversation_history.keys():
             print("New conversation")
-            #TODO: New conversations might need to have a specific "first message" that is curated or stored somewhere...
+            # TODO: New conversations might need to have a specific "first message" that is curated or stored somewhere...
             #      Currently, there is no "first message" for a new conversation.
             self.CreateConversation(conv_id)
-        
+
         self.current_conversation = self.conversation_history[conv_id]
 
         # [2] Update the conversation via conversation id
@@ -63,7 +63,7 @@ class ChatManager:
             resp = {"content": error_msg}
 
         # [5] Include id in response payload
-        resp['id'] = conv_id
+        resp["id"] = conv_id
 
         return resp
 
@@ -76,15 +76,20 @@ class ChatManager:
             conv_id : Conversation/personality id
             prompt_string : System prompt
         """
-        #TODO: error handling (1) if conversation does not exist
+        # TODO: error handling (1) if conversation does not exist
         if conv_id in self.conversation_history:
             self.current_conversation = self.current_conversation[conv_id]
             try:
                 self.current_conversation.AddSystemMessage(prompt_string)
             except Exception as e:
-                print(f"Object stored at current_conversation[{conv_id}] is not a valid Conversation object!\n Error: ", e)
+                print(
+                    f"Object stored at current_conversation[{conv_id}] is not a valid Conversation object!\n Error: ",
+                    e,
+                )
         else:
-            print(f"Conversation does not exist, cannot update prompt for ID: {conv_id}!")
+            print(
+                f"Conversation does not exist, cannot update prompt for ID: {conv_id}!"
+            )
 
     def SendModelRequest(self, conv_id):
         """
@@ -96,7 +101,9 @@ class ChatManager:
         Return:
             Model restful API response json.
         """
-        return self.model.MakeRequest(self.conversation_history[conv_id].ExportSavedMessages())
+        return self.model.MakeRequest(
+            self.conversation_history[conv_id].ExportSavedMessages()
+        )
 
     def StoreConversation(self, conv_id):
         """
@@ -131,7 +138,7 @@ class ChatManager:
             for conv_id, _ in conversation_list:
                 # Create conversation object for all retrieved convesations from remote
                 self.RetrieveConversation(conv_id)
-        
+
     def RetrieveConversation(self, conv_id):
         """
         Updates conversation history with the stored conversation from the database given conversation id.
@@ -153,8 +160,8 @@ class ChatManager:
             print(f"Creating new conversation!")
 
         return self.CreateConversation(conv_id, messages)
-    
-    def CreateConversation(self, personality_id, messages = []):
+
+    def CreateConversation(self, personality_id, messages=[]):
         """
         Creates a new conversation object and assigns it to the conv_id key in conversation_history dict
 
@@ -164,13 +171,17 @@ class ChatManager:
         """
         # TODO: error checking (1) if conv_id does not exist
         # [1] Get personality information from database
-        name, system_prompt, intro_message, img = dbm.GetPersonalityFromID(personality_id)
+        name, system_prompt, intro_message, img = dbm.GetPersonalityFromID(
+            personality_id
+        )
         print(f"Retrieved personality {name}")
 
         if messages == []:
             # If no messages are provided, create a new conversation
-            messages.append({"role" : "assistant", "content": intro_message})
+            messages.append({"role": "assistant", "content": intro_message})
 
         # [2] create new conversation in history with personality and message information
-        self.conversation_history[personality_id] = Conversation(personality_id, name, messages, system_prompt, img)
+        self.conversation_history[personality_id] = Conversation(
+            personality_id, name, messages, system_prompt, img
+        )
         return self.conversation_history[personality_id]

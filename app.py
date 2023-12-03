@@ -24,7 +24,7 @@ from backend import db
 from backend import auth
 from backend.config import Config
 import backend.callbacks as cb
-from backend.ChatManager import ChatManager
+from backend.chat_manager import ChatManager
 from backend.GPTModel import GPTModel
 from backend.auth import login_required
 from backend.DatabaseManager import DatabaseManager as dbm
