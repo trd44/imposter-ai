@@ -17,7 +17,7 @@ import sqlite3
 # endregion
 
 # region Backend Imports
-from backend.Utils import SerializeJson
+from backend.utils import SerializeJson
 
 # endregion
 

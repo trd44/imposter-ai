@@ -28,7 +28,7 @@ from backend.chat_manager import ChatManager
 from backend.GPTModel import GPTModel
 from backend.auth import login_required
 from backend.database_manager import DatabaseManager as dbm
-from backend.Utils import SerializeJson
+from backend.utils import SerializeJson
 
 # endregion
 
