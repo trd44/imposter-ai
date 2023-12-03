@@ -1,6 +1,6 @@
 # region Imports
 from backend.conversation import Conversation
-from backend.DatabaseManager import DatabaseManager as dbm
+from backend.database_manager import DatabaseManager as dbm
 
 # endregion
 
