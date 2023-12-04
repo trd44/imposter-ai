@@ -23,7 +23,7 @@ from backend.utils import SerializeJson
 
 
 # region Table Manipulation Functions
-def CreateNewPersonalityFromJSON(json_filename: str):
+def create_new_personality_from_json(json_filename: str):
     """
     Will create a new personality in the personality table from a JSON file.
 
@@ -169,7 +169,7 @@ def main():
 
     # [7] Call the appropriate function based on the operation
     if args.operation == "insert":
-        CreateNewPersonalityFromJSON(args.json_file)
+        create_new_personality_from_json(args.json_file)
     elif args.operation == "delete":
         delete_personality(args.personality_id)
     elif args.operation == "update":
