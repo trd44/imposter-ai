@@ -14,7 +14,7 @@ for ImposterAI application.
 import os
 from flask import Flask, request, send_from_directory, g
 from flask_restful import Api
-from werkzeug.exceptions import HTTPException, Response
+from werkzeug.exceptions import HTTPException
 from typing import List, Dict
 
 # endregion
@@ -49,7 +49,7 @@ cb.load_openai_api_key()
 
 
 @app.route(rule="/", defaults={"path": ""})
-def serve(path: str) -> Response:
+def serve(path: str):
     """
     Serve the static files in the build directory.
 
@@ -57,15 +57,14 @@ def serve(path: str) -> Response:
         path (str): path to static file
 
     Returns:
-        flask.wrappers.Response: A Flask Response object with the contents of
-        the 'index.html'.
+        A Flask Response object with the contents of the 'index.html'.
     """
     print(path)
     return send_from_directory(app.static_folder, "index.html")
 
 
 @app.route(rule="/favicon.ico")
-def favicon() -> Response:
+def favicon():
     """
     Handle favicon requests.
 
@@ -82,7 +81,7 @@ app.register_blueprint(auth.bp)
 
 # region AssetsHandling
 @app.route(rule="/backend_assets/<path:path>")
-def backend_assets(path: str) -> Response:
+def backend_assets(path: str):
     """
     Provide link to backend hosted asset given path.
 

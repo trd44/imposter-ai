@@ -43,66 +43,65 @@ class GPTModel(AIModel):
         # Set the model id
         self._model_id = model_id
 
+    def make_request(self, conversation_messages):
+        """
+        Makes a request to the model.
 
-def make_request(self, conversation_messages):
-    """
-    Makes a request to the model.
+        Args:
+            conversation_messages (json): Input messages for the api call.
 
-    Args:
-        conversation_messages (json): Input messages for the api call.
+        Returns:
+            JSON: The message response received from the "assistant".
+                  Returns None if there's an error.
+        """
 
-    Returns:
-        JSON: The message response received from the "assistant".
-              Returns None if there's an error.
-    """
+        # Assigns the environment variable for the OPENAI API KEY to openai.api_key.
+        # TODO: This should ideally be done once, perhaps during initialization.
+        openai.api_key = os.getenv("OPENAI_API_KEY")
 
-    # Assigns the environment variable for the OPENAI API KEY to openai.api_key.
-    # TODO: This should ideally be done once, perhaps during initialization.
-    openai.api_key = os.getenv("OPENAI_API_KEY")
+        ret = None
+        # Make API request
+        try:
+            completion = openai.ChatCompletion.create(
+                model=self._model_id,
+                messages=conversation_messages,
+                temperature=1.2,
+            )
+            ret = completion.choices[0].message
 
-    ret = None
-    # Make API request
-    try:
-        completion = openai.ChatCompletion.create(
-            model=self._model_id,
-            messages=conversation_messages,
-            temperature=1.2,
-        )
-        ret = completion.choices[0].message
+        # Error handling for different types of API errors, correctly categorized
+        # Section 1: Service Errors
+        except openai.error.APIConnectionError as e:
+            print(f"Failed to connect to OpenAI API: {e}")
+        except openai.error.ServiceUnavailableError as e:
+            print(f"OpenAI API service is currently unavailable: {e}")
+        except openai.error.RateLimitError as e:
+            print(f"OpenAI API request exceeded rate limit: {e}")
+        except (openai.error.Timeout, openai.error.TryAgain) as e:
+            print(f"OpenAI API request timeout: {e}")
 
-    # Error handling for different types of API errors, correctly categorized
-    # Section 1: Service Errors
-    except openai.error.APIConnectionError as e:
-        print(f"Failed to connect to OpenAI API: {e}")
-    except openai.error.ServiceUnavailableError as e:
-        print(f"OpenAI API service is currently unavailable: {e}")
-    except openai.error.RateLimitError as e:
-        print(f"OpenAI API request exceeded rate limit: {e}")
-    except (openai.error.Timeout, openai.error.TryAgain) as e:
-        print(f"OpenAI API request timeout: {e}")
+        # Section 2: Authentication Errors
+        except openai.error.AuthenticationError as e:
+            print(f"OpenAI API key cannot be authenticated: {e}")
+        except openai.error.PermissionError as e:
+            print(f"OpenAI API request does not have permission: {e}")
+        except openai.error.SignatureVerificationError as e:
+            print(f"OpenAI API signature cannot be verified: {e}")
 
-    # Section 2: Authentication Errors
-    except openai.error.AuthenticationError as e:
-        print(f"OpenAI API key cannot be authenticated: {e}")
-    except openai.error.PermissionError as e:
-        print(f"OpenAI API request does not have permission: {e}")
-    except openai.error.SignatureVerificationError as e:
-        print(f"OpenAI API signature cannot be verified: {e}")
+        # Section 3: Request Errors
+        except openai.error.InvalidAPIType as e:
+            print(f"OpenAI API request contained invalid API Type: {e}")
+        except openai.error.InvalidRequestError as e:
+            print(f"OpenAI API request is invalid: {e}")
 
-    # Section 3: Request Errors
-    except openai.error.InvalidAPIType as e:
-        print(f"OpenAI API request contained invalid API Type: {e}")
-    except openai.error.InvalidRequestError as e:
-        print(f"OpenAI API request is invalid: {e}")
+        # Section 4: General Errors
+        except openai.error.APIError as e:
+            # Handle general API error here, for instance, retry or log the error.
+            print(f"OpenAI API returned an API Error: {e}")
 
-    # Section 4: General Errors
-    except openai.error.APIError as e:
-        # Handle general API error here, for instance, retry or log the error.
-        print(f"OpenAI API returned an API Error: {e}")
+        # Section 5: Unknown Errors
+        except Exception as e:
+            # Handle any other unknown errors
+            print(f"An unknown error occurred: {e}")
 
-    # Section 5: Unknown Errors
-    except Exception as e:
-        # Handle any other unknown errors
-        print(f"An unknown error occurred: {e}")
-
-    return ret
+        return ret
