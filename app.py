@@ -14,7 +14,7 @@ for ImposterAI application.
 import os
 from flask import Flask, request, send_from_directory, g
 from flask_restful import Api
-from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import HTTPException, Response
 from typing import List, Dict
 
 # endregion
@@ -33,9 +33,9 @@ from backend.utils import serialize_json
 # endregion
 
 # region Application Start
-app = Flask(__name__, static_folder="frontend/build", static_url_path="")
-api = Api(app)
-app.config.from_object(Config)
+app = Flask(import_name=__name__, static_folder="frontend/build", static_url_path="")
+api = Api(app=app)
+app.config.from_object(obj=Config)
 
 # Ensure the instance folder exists
 try:
@@ -48,8 +48,8 @@ cb.load_openai_api_key()
 # endregion
 
 
-@app.route("/", defaults={"path": ""})
-def serve(path: str):
+@app.route(rule="/", defaults={"path": ""})
+def serve(path: str) -> Response:
     """
     Serve the static files in the build directory.
 
@@ -64,8 +64,8 @@ def serve(path: str):
     return send_from_directory(app.static_folder, "index.html")
 
 
-@app.route("/favicon.ico")
-def favicon():
+@app.route(rule="/favicon.ico")
+def favicon() -> Response:
     """
     Handle favicon requests.
 
@@ -81,8 +81,8 @@ app.register_blueprint(auth.bp)
 
 
 # region AssetsHandling
-@app.route("/backend_assets/<path:path>")
-def backend_assets(path: str):
+@app.route(rule="/backend_assets/<path:path>")
+def backend_assets(path: str) -> Response:
     """
     Provide link to backend hosted asset given path.
 
@@ -99,7 +99,7 @@ def backend_assets(path: str):
 
 
 # region ContactRetrieval
-@app.route("/backend/fetch_contacts", methods=["GET"])
+@app.route(rule="/backend/fetch_contacts", methods=["GET"])
 @login_required
 def fetch_contacts() -> str:
     """
@@ -112,7 +112,7 @@ def fetch_contacts() -> str:
     print("fetch_contacts, fetching contacts")
     # [1] Retrieve personality list from database
     # TODO: handle case where fetching all personalities returns none
-    personality_list = dbm.GetAllPersonalities()
+    personality_list = dbm.get_all_personalities()
 
     # [2] Convert list of tuples into dictionaries identified by personality_id
     # {
@@ -132,7 +132,7 @@ def fetch_contacts() -> str:
 
     # [3] Retrieve chat list
     user_id = g.user["id"]
-    chat_list = dbm.GetChatList(user_id)
+    chat_list = dbm.get_chat_list(user_id)
 
     # [4] Update any last message given personalities with existing
     # conversations
@@ -163,7 +163,7 @@ def get_last_message(user_id: int, personality_id: int) -> str:
     """
     try:
         last_message = None
-        message_log = dbm.GetChatFromID(user_id, personality_id)
+        message_log = dbm.get_chat_from_id(user_id, personality_id)
 
         # Return the last message (content key in dict) from log
         if (
@@ -185,7 +185,7 @@ def get_last_message(user_id: int, personality_id: int) -> str:
 
 
 # region ChatMessaging
-@app.route("/api/send_user_message", methods=["POST"])
+@app.route(rule="/api/send_user_message", methods=["POST"])
 @login_required
 def send_user_message() -> Dict:
     """
@@ -199,16 +199,16 @@ def send_user_message() -> Dict:
     data = request.json
 
     # [2] Startup chat manager
-    chat_manager = ChatManager(g.user["id"], None, GPTModel())
+    chat_manager = ChatManager(g.user["id"], GPTModel())
 
     # [3] Send message to provided personality
-    response = chat_manager.SendMessage(data["activeContactId"], data["newMessage"])
+    response = chat_manager.send_message(data["activeContactId"], data["newMessage"])
 
     # [4] Return ChatGPT's response
     return response
 
 
-@app.route("/api/fetch_chat_history", methods=["POST"])
+@app.route(rule="/api/fetch_chat_history", methods=["POST"])
 @login_required
 def fetch_chat_history() -> List:
     """
@@ -233,14 +233,14 @@ def fetch_chat_history() -> List:
 
     # [2] Startup chat manager
     print("fetch_chat_history, setting up chat manager")
-    chat_manager = ChatManager(g.user["id"], None, GPTModel())
+    chat_manager = ChatManager(g.user["id"], GPTModel())
 
     # [3] Retreive conversation given ID
     print(f"fetch_chat_history, personality_id: {data['id']}, type: {type(data['id'])}")
-    conversation = chat_manager.RetrieveConversation(data["id"])
+    conversation = chat_manager.retrieve_conversation(data["id"])
 
     # [4] Export conversation history
-    message_history = conversation.ExportSavedMessages()
+    message_history = conversation.export_saved_messages()
     return message_history
 
 

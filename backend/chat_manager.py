@@ -1,65 +1,92 @@
-# region Imports
+"""
+chat_manager.py
+
+Author: Christian Welling
+Date: 12/3/2023
+Company: ImposterAI
+Contact: csw73@cornell.edu
+
+Class for managing conversations of a user. Pulls conversation and personality
+information from DatabaseManager.
+"""
+
+# region Backend Imports
 from backend.conversation import Conversation
 from backend.database_manager import DatabaseManager as dbm
+from backend.gpt_model import AIModel
 
 # endregion
 
 
 class ChatManager:
-    def __init__(self, user_id, database, model):
+    def __init__(self, user_id: int, model: AIModel) -> None:
         """
-        Manages conversations and API model usage for a user
-
-        TODO: database as service injection
-        TODO: model as service injection
+        Manages conversations and API model usage for a user.
 
         Args:
-            user_id : user identification used in querying database
+            user_id (int): user identification used in querying database
+            model: Some type of model object which isn't specified here.
         """
-        self.database = database
-        self.user_id = user_id
-        self.model = model
-        self.conversation_history = {}
+        self._user_id: int = user_id
+        self._model: AIModel = model
+        self._conversation_history: dict = {}
 
         # Retrieve current conversation history for user
-        self.UpdateConversationHistoryFromRemote()
+        self.update_conversation_history_from_remote()
 
-    def SendMessage(self, conv_id, message):
+    def send_message(self, conv_id: int, message) -> dict[str, str]:
         """
-        Send a message and make an API call
+        Send a message by making API request for given model and returns response.
+
+        This method sends a message to a given conversation ID. If the conversation
+        doesn't exist yet, a new one will be created. The method also handles the
+        response from the API, updates the conversation history with the assistant's
+        message and stores it.
+
+        Args:
+            conv_id (int):
+                The ID of the conversation to which the message should be sent.
+
+            message (str):
+                The content of the message to be sent.
+
+        Returns:
+            dict[str, str]:
+                A dictionary including the response content and the id of the
+                conversation. The dictionary keys are "content" for the message
+                returned by the API (with a fallback error message if no response is
+                received) and "id" for the conversation ID.
         """
 
         # [1] Retrieve the conversation in question
-        print(self.conversation_history)
-        print("Sending message for conversation ID: ", conv_id)
+        print(f"Sending message for conversation ID: {conv_id}.")
 
         # If conversation ID does not exist, create new conversation
-        if conv_id not in self.conversation_history.keys():
-            print("New conversation")
-            # TODO: New conversations might need to have a specific "first message" that is curated or stored somewhere...
-            #      Currently, there is no "first message" for a new conversation.
-            self.CreateConversation(conv_id)
+        if conv_id not in self._conversation_history.keys():
+            print("Creating new conversation.")
+            self.create_conversation(conv_id)
 
-        self.current_conversation = self.conversation_history[conv_id]
+        self.current_conversation: Conversation = self._conversation_history[conv_id]
 
         # [2] Update the conversation via conversation id
-        print("Appending message")
-        self.current_conversation.AddUserMessage(message)
+        self.current_conversation.add_user_message(message)
 
         # [3] Send message
         # TODO: error handling on response
-        resp = self.SendModelRequest(conv_id)
+        resp = self._send_model_request(conv_id)
         if resp:
-            print("Response received")
-            print(resp)
+            print("Response received.")
 
             # [4] Update conversation with response
-            self.current_conversation.AddAssistantMessage(resp.content)
+            self.current_conversation.add_assistant_message(resp.content)
 
             # Store History
-            self.StoreConversation(conv_id)
+            self.store_conversation(conv_id)
         else:
-            error_msg = "... Imposter does not feel like responding at the current moment ... please try again later!"
+            error_msg = (
+                "... Imposter does not feel like responding at the current moment "
+                + "... please try again later!"
+            )
             resp = {"content": error_msg}
 
         # [5] Include id in response payload
@@ -67,121 +94,131 @@ class ChatManager:
 
         return resp
 
-    def UpdateSystemPrompt(self, conv_id, prompt_string):
+    def update_system_prompt(self, conv_id: int, prompt_string: str) -> None:
         """
         Updates the system pompt for a specified conversation/personality ID.
         Presumes there is only a single prompt.
 
         Args:
-            conv_id : Conversation/personality id
-            prompt_string : System prompt
+            conv_id (int): Conversation/personality id
+            prompt_string (str): System prompt
         """
         # TODO: error handling (1) if conversation does not exist
-        if conv_id in self.conversation_history:
-            self.current_conversation = self.current_conversation[conv_id]
-            try:
-                self.current_conversation.AddSystemMessage(prompt_string)
-            except Exception as e:
-                print(
-                    f"Object stored at current_conversation[{conv_id}] is not a valid Conversation object!\n Error: ",
-                    e,
-                )
+        # Fetch relevant conversation if exist
+        if conv_id in self._conversation_history:
+            self.current_conversation: Conversation = self.current_conversation[conv_id]
+            # Update system prompt for conversation
+            self.current_conversation.add_system_message(prompt_string)
         else:
             print(
                 f"Conversation does not exist, cannot update prompt for ID: {conv_id}!"
             )
 
-    def SendModelRequest(self, conv_id):
+    def _send_model_request(self, conv_id: int):
         """
         Makes a model request given the current conversation state.
 
         Args:
-            conv_id : Conversation id
+            conv_id (int): Conversation id
 
         Return:
             Model restful API response json.
         """
-        return self.model.MakeRequest(
-            self.conversation_history[conv_id].ExportSavedMessages()
+        return self._model.make_request(
+            self._conversation_history[conv_id].export_saved_messages()
         )
 
-    def StoreConversation(self, conv_id):
+    def store_conversation(self, conv_id) -> None:
         """
-        Stores the current state of the conversation in the database. Will not update the personality table in any way.
+        Stores the current state of the conversation in the database.
 
         Args:
-            conv_id : Conversation id
+            conv_id (int): Conversation id
         """
         # retreive messages from conversation
-        messages = self.conversation_history[conv_id].GetMessages()
-        dbm.SaveChat(self.user_id, conv_id, messages)
+        messages = self._conversation_history[conv_id].get_messages()
+        dbm.save_chat(self._user_id, conv_id, messages)
 
-    def QuerySavedConversations(self):
+    def query_saved_conversations(self) -> list:
         """
-        Retrieves all of the available chats. If there are none, returns none
-        Returns a list of tubles containing conversation ids and the corresponding personality name
-        (conv_id, personality_name)
-        """
-        return dbm.GetChatList(self.user_id)
+        Retrieves all available chat conversations for a user from the database.
 
-    def UpdateConversationHistoryFromRemote(self):
+        Returns:
+            list: A list of tuples where each tuple contains a conversation id
+            ('conv_id') and a corresponding personality name ('personality_name').
+            If there are no saved conversations, it returns an empty list.
+
+            Example:
+                [('conv_id_1', 'personality_name_1'),...]
+        """
+        return dbm.get_chat_list(self._user_id)
+
+    def update_conversation_history_from_remote(self) -> None:
         """
         Updates conversation list with any existing conversations from remote.
         """
-        print("Updating Conversation History")
-        conversation_list = self.QuerySavedConversations()
-        print("Conversation List:")
-        print(conversation_list)
+        print("Updating conversation history.")
+        conversation_list = self.query_saved_conversations()
         if conversation_list is None or conversation_list == []:
-            print("No recorded conversations!")
+            print(f"No recorded conversations for User ID: {self._user_id}")
         else:
             for conv_id, _ in conversation_list:
                 # Create conversation object for all retrieved convesations from remote
-                self.RetrieveConversation(conv_id)
+                self.retrieve_conversation(conv_id)
 
-    def RetrieveConversation(self, conv_id):
+    def retrieve_conversation(self, conv_id: int) -> Conversation:
         """
-        Updates conversation history with the stored conversation from the database given conversation id.
+        Updates conversation history with the stored conversation from the database
+        given conversation id.
 
         Args:
-            conv_id : Conversation id
+            conv_id (int): Conversation id
 
         Returns:
-            conversation object for current id
+            conversation object for current conversation id.
         """
-        print(f"RETRIEVING CONVERSATION for ID: {conv_id}")
-        messages = dbm.GetChatFromID(self.user_id, conv_id)
-        if messages:
-            print("Retreived messages:")
-            print(messages)
-        else:
+        # Retrieve conversation messages from database if conversation exists
+        print(f"Retreiving conversation with ID: {conv_id}.")
+        messages = dbm.get_chat_from_id(self._user_id, conv_id)
+        if messages is None:
             messages = []
             print(f"No record of conversation with ID: {conv_id} exists!")
-            print(f"Creating new conversation!")
+            print("Creating new conversation!")
 
-        return self.CreateConversation(conv_id, messages)
+        return self.create_conversation(conv_id, messages)
 
-    def CreateConversation(self, personality_id, messages=[]):
+    def create_conversation(
+        self, personality_id: int, messages: list = []
+    ) -> Conversation:
         """
-        Creates a new conversation object and assigns it to the conv_id key in conversation_history dict
+        Creates a new conversation object and assigns it to the conv_id key in
+        conversation_history dict. Conversation id (conv_id) will match the
+        personality id (personality_id) when a conversation is created.
 
         Args:
-            personality_id : Personality id
-            messages: Array of messages related to conversation. If new conversation leave empty.
+            personality_id (int): Personality id (same as conversation id)
+            messages (list):
+                Array of messages related to conversation. If new conversation,
+                leave as empty list.
+
+        Returns:
+            Newly created conversation object.
         """
-        # TODO: error checking (1) if conv_id does not exist
+        # TODO: error checking personality_id does not match any know personalities in
+        # database
         # [1] Get personality information from database
-        name, system_prompt, intro_message, img = dbm.GetPersonalityFromID(
+        name, system_prompt, intro_message, img = dbm.get_personality_from_id(
             personality_id
         )
-        print(f"Retrieved personality {name}")
+        print(f"Retrieved personality information for {name} ({personality_id}.)")
 
         if messages == []:
             # If no messages are provided, create a new conversation
             messages.append({"role": "assistant", "content": intro_message})
 
-        # [2] create new conversation in history with personality and message information
-        self.conversation_history[personality_id] = Conversation(
+        # [2] Create new conversation in history with personality and message
+        # information
+        self._conversation_history[personality_id] = Conversation(
             personality_id, name, messages, system_prompt, img
         )
-        return self.conversation_history[personality_id]
+        return self._conversation_history[personality_id]
