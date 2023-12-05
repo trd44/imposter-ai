@@ -17,13 +17,13 @@ import sqlite3
 # endregion
 
 # region Backend Imports
-from backend.utils import SerializeJson
+from backend.utils import serialize_json
 
 # endregion
 
 
 # region Table Manipulation Functions
-def create_new_personality_from_json(json_filename: str):
+def create_new_personality_from_json(json_filename: str) -> None:
     """
     Will create a new personality in the personality table from a JSON file.
 
@@ -46,7 +46,7 @@ def create_new_personality_from_json(json_filename: str):
     """,
         (
             data["name"],
-            SerializeJson(data["system_prompt"]),
+            serialize_json(data["system_prompt"]),
             data["intro_message"],
             data["image_path"],
         ),
@@ -59,7 +59,7 @@ def create_new_personality_from_json(json_filename: str):
     print("Data inserted successfully!")
 
 
-def delete_personality(personality_id: int):
+def delete_personality(personality_id: int) -> None:
     """
     Will delete personality from personality table.
 
@@ -109,7 +109,7 @@ def update_personality(personality_id: int, json_filename: str):
     """,
         (
             data["name"],
-            SerializeJson(data["system_prompt"]),
+            serialize_json(data["system_prompt"]),
             data["intro_message"],
             data["image_path"],
             personality_id,
