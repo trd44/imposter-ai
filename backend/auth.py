@@ -12,7 +12,7 @@ user registration, login, logout and also implementing the required login decora
 
 It uses JWT for authentication and sqlite for database.
 """
-# regin General/API Imports
+# region General/API Imports
 import datetime
 import functools
 from typing import Callable
@@ -28,7 +28,7 @@ from backend.db import get_db
 
 # endregion
 
-bp = Blueprint("auth", __name__, url_prefix="/auth")
+bp = Blueprint(name="auth", import_name=__name__, url_prefix="/auth")
 
 
 # region Token Related Operations
@@ -83,7 +83,7 @@ def decode_token(token: str) -> int:
 
 
 # region User Authentication Routes
-@bp.route("/register", methods=("GET", "POST"))
+@bp.route(rule="/register", methods=("GET", "POST"))
 def register():
     """
     Register a new user with given username and password.
@@ -143,7 +143,7 @@ def register():
         return jsonify({"error": error}), 400
 
 
-@bp.route("/login", methods=["GET", "POST"])
+@bp.route(rule="/login", methods=["GET", "POST"])
 def login():
     """
     Log in an existing user by verifying their credentials.
@@ -197,7 +197,7 @@ def login():
             return jsonify({"error": "An error occurred, please try again later."}), 500
 
 
-@bp.route("/logout", methods=["POST"])
+@bp.route(rule="/logout", methods=["POST"])
 def logout() -> (str, int):
     """
     Clear the current session, including the stored 'user_id'.
@@ -249,7 +249,7 @@ def login_required(view: Callable) -> Callable:
         Modified view function.
     """
 
-    @functools.wraps(view)
+    @functools.wraps(wrapped=view)
     def wrapped_view(*args, **kwargs):
         # Get the authorization header
         auth_header = request.headers.get("Authorization")
