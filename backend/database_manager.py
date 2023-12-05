@@ -1,6 +1,6 @@
 # region Imports
 from backend.db import get_db
-from backend.utils import SerializeJson, DeserializeJson
+from backend.utils import serialize_json, deserialize_json
 
 # endregion
 
@@ -82,7 +82,7 @@ class DatabaseManager:
         if personality_row is not None:
             ret = (
                 personality_row[0],
-                DeserializeJson(personality_row[1]),
+                deserialize_json(personality_row[1]),
                 personality_row[2],
                 personality_row[3],
             )

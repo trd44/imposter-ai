@@ -28,7 +28,7 @@ from backend.chat_manager import ChatManager
 from backend.gpt_model import GPTModel
 from backend.auth import login_required
 from backend.database_manager import DatabaseManager as dbm
-from backend.utils import SerializeJson
+from backend.utils import serialize_json
 
 # endregion
 
@@ -145,7 +145,7 @@ def fetch_contacts() -> str:
 
     # [5] Convert to list of dictionaries in JSON format
     personality_list_dict_format = list(personality_dict.values())
-    personality_list_json_format = SerializeJson(personality_list_dict_format)
+    personality_list_json_format = serialize_json(personality_list_dict_format)
     return personality_list_json_format
 
 
