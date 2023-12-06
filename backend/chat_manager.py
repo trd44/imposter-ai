@@ -212,7 +212,7 @@ class ChatManager:
             personality_id
         )
         LOGGER.debug(
-            f"Retrieved personality information for {name} ({personality_id}.)"
+            f"Retrieved personality information for {name} ({personality_id})."
         )
 
         if messages == []:
