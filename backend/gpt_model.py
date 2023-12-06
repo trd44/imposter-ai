@@ -18,8 +18,8 @@ import openai
 # endregion
 
 # region Backend Imports
-
 from backend.ai_model import AIModel
+from backend.logger import LOGGER
 
 # endregion
 
@@ -72,36 +72,36 @@ class GPTModel(AIModel):
         # Error handling for different types of API errors, correctly categorized
         # Section 1: Service Errors
         except openai.error.APIConnectionError as e:
-            print(f"Failed to connect to OpenAI API: {e}")
+            LOGGER.error(f"Failed to connect to OpenAI API: {e}")
         except openai.error.ServiceUnavailableError as e:
-            print(f"OpenAI API service is currently unavailable: {e}")
+            LOGGER.error(f"OpenAI API service is currently unavailable: {e}")
         except openai.error.RateLimitError as e:
-            print(f"OpenAI API request exceeded rate limit: {e}")
+            LOGGER.error(f"OpenAI API request exceeded rate limit: {e}")
         except (openai.error.Timeout, openai.error.TryAgain) as e:
-            print(f"OpenAI API request timeout: {e}")
+            LOGGER.error(f"OpenAI API request timeout: {e}")
 
         # Section 2: Authentication Errors
         except openai.error.AuthenticationError as e:
-            print(f"OpenAI API key cannot be authenticated: {e}")
+            LOGGER.error(f"OpenAI API key cannot be authenticated: {e}")
         except openai.error.PermissionError as e:
-            print(f"OpenAI API request does not have permission: {e}")
+            LOGGER.error(f"OpenAI API request does not have permission: {e}")
         except openai.error.SignatureVerificationError as e:
-            print(f"OpenAI API signature cannot be verified: {e}")
+            LOGGER.error(f"OpenAI API signature cannot be verified: {e}")
 
         # Section 3: Request Errors
         except openai.error.InvalidAPIType as e:
-            print(f"OpenAI API request contained invalid API Type: {e}")
+            LOGGER.error(f"OpenAI API request contained invalid API Type: {e}")
         except openai.error.InvalidRequestError as e:
-            print(f"OpenAI API request is invalid: {e}")
+            LOGGER.error(f"OpenAI API request is invalid: {e}")
 
         # Section 4: General Errors
         except openai.error.APIError as e:
             # Handle general API error here, for instance, retry or log the error.
-            print(f"OpenAI API returned an API Error: {e}")
+            LOGGER.error(f"OpenAI API returned an API Error: {e}")
 
         # Section 5: Unknown Errors
         except Exception as e:
             # Handle any other unknown errors
-            print(f"An unknown error occurred: {e}")
+            LOGGER.error(f"An unknown error occurred: {e}")
 
         return ret

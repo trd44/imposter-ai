@@ -25,6 +25,7 @@ import jwt
 
 # region Backend Imports
 from backend.db import get_db
+from backend.logger import LOGGER
 
 # endregion
 
@@ -42,7 +43,7 @@ def create_token(user_id: int) -> (str, float):
     Returns:
         tuple: Generated JWT Token and expiry timestamp
     """
-    print(f"Creating token with user_id: {user_id}")
+    LOGGER.info(f"Creating token with user_id: {user_id}")
     token_expiry = (
         datetime.datetime.utcnow() + current_app.config["JWT_EXPIRATION_DELTA"]
     )
@@ -72,10 +73,10 @@ def decode_token(token: str) -> int:
         )
         return payload["user_id"]
     except jwt.ExpiredSignatureError:
-        print("Error, token expired")
+        LOGGER.error("Error, token expired")
         return None
     except jwt.InvalidTokenError:
-        print("Error, invalid token")
+        LOGGER.error("Error, invalid token")
         return None
 
 
@@ -136,10 +137,10 @@ def register():
                     200,
                 )
             else:
-                print("e2", error)
+                LOGGER.error("e2", error)
                 return jsonify({"error": error}), 400
 
-        print("e1", error)
+        LOGGER.error("e1", error)
         return jsonify({"error": error}), 400
 
 
@@ -193,7 +194,7 @@ def login():
 
         except Exception as e:
             # catch any other error
-            print(e)
+            LOGGER.error(e)
             return jsonify({"error": "An error occurred, please try again later."}), 500
 
 
@@ -263,7 +264,7 @@ def login_required(view: Callable) -> Callable:
 
         # Decode token to get user_id
         user_id = decode_token(token)
-        print(f"User ID: {user_id}")
+        LOGGER.info(f"User ID: {user_id}")
         if not user_id:
             return jsonify({"error": "Invalid or expired token"}), 401
 

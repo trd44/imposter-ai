@@ -14,6 +14,7 @@ information from DatabaseManager.
 from backend.conversation import Conversation
 from backend.database_manager import DatabaseManager as dbm
 from backend.gpt_model import AIModel
+from backend.logger import LOGGER
 
 # endregion
 
@@ -59,11 +60,11 @@ class ChatManager:
         """
 
         # [1] Retrieve the conversation in question
-        print(f"Sending message for conversation ID: {conv_id}.")
+        LOGGER.debug(f"Sending message for conversation ID: {conv_id}.")
 
         # If conversation ID does not exist, create new conversation
         if conv_id not in self._conversation_history.keys():
-            print("Creating new conversation.")
+            LOGGER.debug("Creating new conversation.")
             self.create_conversation(conv_id)
 
         self.current_conversation: Conversation = self._conversation_history[conv_id]
@@ -75,7 +76,7 @@ class ChatManager:
         # TODO: error handling on response
         resp = self._send_model_request(conv_id)
         if resp:
-            print("Response received.")
+            LOGGER.debug("Response received.")
 
             # [4] Update conversation with response
             self.current_conversation.add_assistant_message(resp.content)
@@ -110,7 +111,7 @@ class ChatManager:
             # Update system prompt for conversation
             self.current_conversation.add_system_message(prompt_string)
         else:
-            print(
+            LOGGER.error(
                 f"Conversation does not exist, cannot update prompt for ID: {conv_id}!"
             )
 
@@ -157,10 +158,10 @@ class ChatManager:
         """
         Updates conversation list with any existing conversations from remote.
         """
-        print("Updating conversation history.")
+        LOGGER.info("Updating conversation history.")
         conversation_list = self.query_saved_conversations()
         if conversation_list is None or conversation_list == []:
-            print(f"No recorded conversations for User ID: {self._user_id}")
+            LOGGER.info(f"No recorded conversations for User ID: {self._user_id}")
         else:
             for conv_id, _ in conversation_list:
                 # Create conversation object for all retrieved convesations from remote
@@ -178,12 +179,12 @@ class ChatManager:
             conversation object for current conversation id.
         """
         # Retrieve conversation messages from database if conversation exists
-        print(f"Retreiving conversation with ID: {conv_id}.")
+        LOGGER.info(f"Retreiving conversation with ID: {conv_id}.")
         messages = dbm.get_chat_from_id(self._user_id, conv_id)
         if messages is None:
             messages = []
-            print(f"No record of conversation with ID: {conv_id} exists!")
-            print("Creating new conversation!")
+            LOGGER.debug(f"No record of conversation with ID: {conv_id} exists!")
+            LOGGER.debug("Creating new conversation!")
 
         return self.create_conversation(conv_id, messages)
 
@@ -210,7 +211,9 @@ class ChatManager:
         name, system_prompt, intro_message, img = dbm.get_personality_from_id(
             personality_id
         )
-        print(f"Retrieved personality information for {name} ({personality_id}.)")
+        LOGGER.debug(
+            f"Retrieved personality information for {name} ({personality_id}.)"
+        )
 
         if messages == []:
             # If no messages are provided, create a new conversation

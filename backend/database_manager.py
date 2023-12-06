@@ -9,10 +9,15 @@ Contact: csw73@cornell.edu
 Class for managing database usage.
 """
 
-# region Imports
+# region General/API Imports
+from sqlite3 import Connection
+
+# endregion
+
+# region Backend Imports
 from backend.db import get_db
 from backend.utils import serialize_json, deserialize_json
-from sqlite3 import Connection
+from backend.logger import LOGGER
 
 # endregion
 
@@ -182,8 +187,7 @@ class DatabaseManager:
             db.commit()
         except Exception as e:
             # Log errors
-            # TODO: Replace print statement with logging
-            print(e)
+            LOGGER.error("Cannot saver conversation to database! {e}")
 
     @staticmethod
     def save_personality(
@@ -233,5 +237,4 @@ class DatabaseManager:
             db.commit()
         except Exception as e:
             # Log errors
-            # TODO: Replace print statement with logging
-            print(e)
+            LOGGER.error(f"Cannot save personality in database! {e}")

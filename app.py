@@ -12,6 +12,9 @@ for ImposterAI application.
 
 # region General/API Imports
 import os
+import sys
+import logging
+from flask.logging import default_handler
 from flask import Flask, request, send_from_directory, g
 from flask_restful import Api
 from werkzeug.exceptions import HTTPException
@@ -47,6 +50,18 @@ except OSError:
 cb.load_openai_api_key()
 # endregion
 
+# region Logging Start
+handler = logging.StreamHandler(sys.stdout)
+handler.setFormatter(
+    logging.Formatter(
+        "[%(asctime)s] [%(levelname)s] [%(filename)s / %(funcName)s] %(message)s"
+    )
+)
+app.logger.removeHandler(default_handler)
+app.logger.addHandler(handler)
+app.logger.setLevel(logging.DEBUG)
+# endregion
+
 
 @app.route(rule="/", defaults={"path": ""})
 def serve(path: str):
@@ -59,7 +74,6 @@ def serve(path: str):
     Returns:
         A Flask Response object with the contents of the 'index.html'.
     """
-    print(path)
     return send_from_directory(app.static_folder, "index.html")
 
 
@@ -108,7 +122,7 @@ def fetch_contacts() -> str:
         str: A JSON formatted string representing list of contacts,
         each with their id, nickname, img, and last_message.
     """
-    print("fetch_contacts, fetching contacts")
+    app.logger.info("Fetching contacts")
     # [1] Retrieve personality list from database
     # TODO: handle case where fetching all personalities returns none
     personality_list = dbm.get_all_personalities()
@@ -138,7 +152,9 @@ def fetch_contacts() -> str:
     for personality_id, _ in chat_list:
         last_message = get_last_message(user_id, personality_id)
         if last_message is None:
-            print(f"Database Error. Conversation for [{personality_id}] not found!")
+            app.logger.error(
+                f"Database Error. Conversation for [{personality_id}] not found!"
+            )
         else:
             personality_dict[personality_id]["last_message"] = last_message
 
@@ -173,7 +189,7 @@ def get_last_message(user_id: int, personality_id: int) -> str:
             last_message = message_log[-1]["content"]
         return last_message
     except Exception as e:
-        print(
+        app.logger.error(
             "An error occurred while retrieving the last message for user_id"
             + f"{user_id} and personality_id {personality_id}: {str(e)}"
         )
@@ -227,15 +243,15 @@ def fetch_chat_history() -> List:
               messages in their chronological order.
     """
     # [1] Get user's input
-    print("fetch_chat_history, retreiving data from json")
+    app.logger.debug("Retreiving data from json")
     data = request.json
 
     # [2] Startup chat manager
-    print("fetch_chat_history, setting up chat manager")
+    app.logger.debug("Setting up chat manager")
     chat_manager = ChatManager(g.user["id"], GPTModel())
 
     # [3] Retreive conversation given ID
-    print(f"fetch_chat_history, personality_id: {data['id']}, type: {type(data['id'])}")
+    app.logger.debug(f"personality_id: {data['id']}, type: {type(data['id'])}")
     conversation = chat_manager.retrieve_conversation(data["id"])
 
     # [4] Export conversation history

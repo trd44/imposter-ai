@@ -9,8 +9,13 @@ Contact: csw73@cornell.edu
 Contains callback functions.
 """
 
-# region General/API imports
+# region General/API Imports
 import os
+
+# endregion
+
+# region Backend Imports
+from backend.logger import LOGGER
 
 # endregion
 
@@ -35,4 +40,4 @@ def load_openai_api_key() -> None:
     # Handle exceptions if something goes wrong while opening the file or reading from it
     except Exception as e:
         # Print error message with the details of the exception
-        print(f"error: cannot read api key! {str(e)}")
+        LOGGER.error(f"error: cannot read api key! {str(e)}")
