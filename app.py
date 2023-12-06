@@ -54,7 +54,7 @@ cb.load_openai_api_key()
 handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(
     logging.Formatter(
-        "[%(asctime)s] [%(levelname)s] [%(filename)s / %(funcName)s] %(message)s"
+        "[%(asctime)s] [%(levelname)s] [%(filename)s > %(funcName)s] %(message)s"
     )
 )
 app.logger.removeHandler(default_handler)
