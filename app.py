@@ -59,7 +59,7 @@ handler.setFormatter(
 )
 app.logger.removeHandler(default_handler)
 app.logger.addHandler(handler)
-app.logger.setLevel(logging.DEBUG)
+app.logger.setLevel(logging.ERROR)
 # endregion
 
 
