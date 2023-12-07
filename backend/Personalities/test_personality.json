@@ -1,0 +1,6 @@
+{
+    "name":"Sample",
+    "system_prompt":["Sample System Prompt"],
+    "intro_message":"Sample Intro Message",
+    "image_path":"TestContact.jpeg"
+}

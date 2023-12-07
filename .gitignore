@@ -2,5 +2,7 @@
 __pycache__
 API_KEY
 node_modules*
-# build*
-# frontend/src/TestContact.jpeg
+build*
+.DS_Store
+.vscode
+.vscode/*
