@@ -63,7 +63,7 @@ app.logger.setLevel(logging.ERROR)
 # endregion
 
 
-@app.route(rule="/", defaults={"path": ""})
+@app.route('/', defaults={"path": ""})
 def serve(path: str):
     """
     Serve the static files in the build directory.
