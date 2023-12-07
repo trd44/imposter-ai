@@ -63,7 +63,7 @@ app.logger.setLevel(logging.ERROR)
 # endregion
 
 
-@app.route('/', defaults={"path": ""})
+@app.route(rule="/", defaults={"path": ""})
 def serve(path: str):
     """
     Serve the static files in the build directory.
@@ -74,7 +74,6 @@ def serve(path: str):
     Returns:
         A Flask Response object with the contents of the 'index.html'.
     """
-    print(app.static_folder)
     return send_from_directory(app.static_folder, "index.html")
 
 
